@@ -1,8 +1,17 @@
-from flask import Flask
-from flask import render_template
-from flask import request
+from flask import Flask, render_template
+from flask import request, Response, session, flash, redirect, url_for
+
+from functools import wraps
+
+logins = {'clerk1':'word',
+          'clerk2':'1234',
+          'bor1':'1234',
+          'bor2':'1234',
+          'fac1':'bob',
+          'lib1':'asdf'}
 
 app = Flask(__name__)
+app.secret_key = 'totally not safe'
 
 @app.route("/")
 def welcome():
@@ -16,14 +25,23 @@ def index(name=None):
 def login():
     error = None
     if request.method == 'POST':
-        if valid_login(request.form['username'],
-                       request.form['password']):
-            return log_the_user_in(request.form['username'])
+        username = request.form['username']
+        passwd = request.form['password']
+        if username not in logins:
+            error = 'Invalid username'
+        elif passwd != logins[username]:
+            error = 'Invalid password'
         else:
-            error = 'Invalid username/password'
-    # the code below is executed if the request method
-    # was GET or the credentials were invalid
+            session['logged_in'] = True
+            flash('You were logged in')
+            return redirect(url_for('index'))
     return render_template('login.html', error=error)
 
+@app.route('/logout')
+def logout():
+    # remove the username from the session if it's there
+    session.pop('username', None)
+    return redirect(url_for('login'))
+
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
