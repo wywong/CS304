@@ -70,7 +70,11 @@
 			<li><a href="#">Personal Info</a></li>
 					</ul>
 				</li>
-		<li><a href="#">Logout</a></li>
+		{% if user %}
+		<li><a href="/logout">Logout</a></li>
+		{% else %}
+		<li><a href="/login">Login</a></li>
+		{% endif %}
 
 			</ul>
 

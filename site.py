@@ -24,9 +24,13 @@ app.secret_key = 'totally not safe'
 def welcome():
     return render_template('welcome.html')
 
-@app.route("/index/<accType>")
-def index(accType=None):
-    return render_template('index.html', accType=accType)
+@app.route("/index")
+@app.route("/index/<user>")
+def index(user=None):
+    if user in session:
+        return render_template('index.html', user=user, accType=accs[user].accType)
+    else:
+        return render_template('index.html', user=user, accType=None)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -39,9 +43,9 @@ def login():
         elif passwd != accs[username].passwd:
             error = 'Invalid password'
         else:
-            session['logged_in'] = True
+            session[ username ] = username
             flash('You were logged in')
-            return redirect(url_for('index', accType=accs[username].accType))
+            return redirect(url_for('index', user=username))
     return render_template('login.html', error=error)
 
 @app.route('/logout')
