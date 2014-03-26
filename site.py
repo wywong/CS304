@@ -3,12 +3,19 @@ from flask import request, Response, session, flash, redirect, url_for
 
 from functools import wraps
 
-logins = {'clerk1':'word',
-          'clerk2':'1234',
-          'bor1':'1234',
-          'bor2':'1234',
-          'fac1':'bob',
-          'lib1':'asdf'}
+class Account:
+    def __init__(self, passwd, accType):
+        self.passwd = passwd
+        self.accType = accType
+
+
+accs = {'clerk1':Account('word', 'clerk'),
+        'clerk2':Account('1234', 'clerk'),
+        'bor1':Account('1234', 'borrower'),
+        'bor2':Account('1234', 'borrower'),
+        'fac1':Account('1234', 'borrower'),
+        'lib1':Account('1234', 'librarian')
+        }
 
 app = Flask(__name__)
 app.secret_key = 'totally not safe'
@@ -17,9 +24,9 @@ app.secret_key = 'totally not safe'
 def welcome():
     return render_template('welcome.html')
 
-@app.route("/index")
-def index(name=None):
-    return render_template('index.html', name=name)
+@app.route("/index/<accType>")
+def index(accType=None):
+    return render_template('index.html', accType=accType)
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -27,14 +34,14 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         passwd = request.form['password']
-        if username not in logins:
+        if username not in accs:
             error = 'Invalid username'
-        elif passwd != logins[username]:
+        elif passwd != accs[username].passwd:
             error = 'Invalid password'
         else:
             session['logged_in'] = True
             flash('You were logged in')
-            return redirect(url_for('index'))
+            return redirect(url_for('index', accType=accs[username].accType))
     return render_template('login.html', error=error)
 
 @app.route('/logout')
