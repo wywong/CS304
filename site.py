@@ -1,25 +1,17 @@
 #!/usr/bin/python
 
-from flask import Flask, render_template
-from flask import request, Response, session, flash, redirect, url_for
+from flask import Flask, request, session, url_for, redirect, \
+     render_template, abort, g, flash
 
 from functools import wraps
 
 import MySQLdb
 from src import TableOperation
 
-class Account:
-    def __init__(self, passwd, accType):
-        self.passwd = passwd
-        self.accType = accType
-
-
-accs = {'clerk1':Account('word', 'clerk'),
-        'clerk2':Account('1234', 'clerk'),
-        'bor1':Account('1234', 'borrower'),
-        'bor2':Account('1234', 'borrower'),
-        'fac1':Account('1234', 'borrower'),
-        'lib1':Account('1234', 'librarian')
+accs = {
+        'clerk1':['clerk1', 'word', 'stan', None, None, None, None, None, 'clerk'],
+        'clerk2':['clerk2', '1234', 'steve', None, None, None, None, None, 'clerk'],
+        'lib1':['lib1', '1234', 'mel', None, None, None, None, None, 'librarian']
         }
 
 try:
@@ -33,39 +25,59 @@ except:
 app = Flask(__name__)
 app.secret_key = 'totally not safe'
 
-@app.route("/")
-def welcome():
-    return render_template('welcome.html')
+@app.before_request
+def before_request():
+    g.userInfo = None
+    if 'user_id' in session:
+        g.userInfo = session['user_id']
 
-@app.route("/index")
-@app.route("/index/<user>")
-def index(user=None):
-    if user in session:
-        return render_template('index.html', user=user, accType=accs[user].accType)
+@app.route("/")
+def index():
+    if not g.userInfo:
+        return render_template('index.html', user=None, accType=None)
     else:
-        return render_template('index.html', user=user, accType=None)
+        return render_template('index.html', user=g.userInfo[0], accType=g.userInfo[8])
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
+    """Logs the user in."""
+    if g.userInfo:
+        return redirect(url_for('index', user=g.userInfo))
     error = None
+    cur = db.cursor()
     if request.method == 'POST':
-        username = request.form['username']
-        passwd = request.form['password']
-        if username not in accs:
+        u = request.form['username'].encode('utf-8')
+        p = request.form['password'].encode('utf-8')
+        sql = "SELECT * FROM Borrower WHERE bid = '%s'" % (u)
+        cur.execute(sql)
+        queryData = cur.fetchall()
+        if queryData:
+            row = queryData[0]
+            user = row[0]
+            pw = row[1]
+        else:
+            if u in accs:
+                user = u
+                pw = accs[user][1]
+            else:
+                user = None
+                pw = None
+        if user is None:
             error = 'Invalid username'
-        elif passwd != accs[username].passwd:
+        elif not pw == p:
             error = 'Invalid password'
         else:
-            session[ username ] = username
             flash('You were logged in')
-            return redirect(url_for('index', user=username))
+            session['user_id'] = row if row else accs[u]
+            print session['user_id']
+            return redirect(url_for('index', user=user))
     return render_template('login.html', error=error)
 
 @app.route('/logout')
 def logout():
     # remove the username from the session if it's there
-    session.pop('username', None)
-    return redirect(url_for('login'))
+    session.pop('user_id', None)
+    return redirect(url_for('index'))
 
 @app.route('/addborrower', methods=['POST', 'GET'])
 def addborrower():
