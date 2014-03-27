@@ -1,6 +1,8 @@
 *
 !.gitignore
 !*/
+!*.py
+!*.sql
 !README.md
 !*.html
 !*.py
