@@ -5,6 +5,9 @@ from flask import request, Response, session, flash, redirect, url_for
 
 from functools import wraps
 
+import MySQLdb
+from src import TableOperation
+
 class Account:
     def __init__(self, passwd, accType):
         self.passwd = passwd
@@ -18,6 +21,14 @@ accs = {'clerk1':Account('word', 'clerk'),
         'fac1':Account('1234', 'borrower'),
         'lib1':Account('1234', 'librarian')
         }
+
+try:
+    db = MySQLdb.connect(host="localhost",
+                        user="testuser",
+                        passwd="01189998819991197253",
+                        db="cs304")
+except:
+    print "Error %d: %s" % (e.args[0], e.args[1])
 
 app = Flask(__name__)
 app.secret_key = 'totally not safe'
@@ -55,6 +66,29 @@ def logout():
     # remove the username from the session if it's there
     session.pop('username', None)
     return redirect(url_for('login'))
+
+@app.route('/addborrower', methods=['POST', 'GET'])
+def addborrower():
+    error = None
+    if request.method == 'POST':
+        bid = request.form[ 'bid' ]
+        passwd = request.form[ 'passwd' ]
+        bName = request.form[ 'name' ]
+        addr = request.form[ 'addr' ]
+        phone = request.form[ 'phone' ]
+        email = request.form[ 'email' ]
+        sNum = request.form[ 'sNum' ]
+        expiryDate = request.form[ 'expiryDate' ]
+        bType = request.form[ 'bType' ]
+
+        row = (bid, passwd, bName, addr, phone, email, sNum, expiryDate, bType)
+
+        row = [element.encode('utf-8') for element in row]
+
+        TableOperation.insertTuple(db, 'Borrower', tuple(row))
+        return redirect(url_for('index', user=None))
+
+    return render_template('addborrower.html', error=error)
 
 if __name__ == '__main__':
     app.run(debug=True)
