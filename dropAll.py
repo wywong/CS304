@@ -10,7 +10,7 @@ except:
 
 cur = db.cursor()
 
-fd = open('Resources/createTables.sql')
+fd = open('Resources/drop.sql')
 
 sqlFile = fd.read()
 
