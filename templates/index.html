@@ -31,8 +31,6 @@
 				<ul class="dropdown-menu">
 				<li><a href="#">Check out a Book</a></li>
 				<li><a href="#">Place a Book on Hold</a></li>
-				<li class="divider" id = "reserve_a_book"></li>
-				<li><a href="#">Place a Book on Reserve</a></li>
 				</ul>
 			</li>
 
@@ -45,6 +43,13 @@
 				</ul>
 			</li>
 
+			<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Borrowers<b class="caret"></b></a>
+				<ul class = "dropdown-menu">
+					<li><a href="#">Add Borrower</a></li>
+				</ul>
+			</li>
+
 			{% if accType == 'librarian' %}
 			<li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Library<b class="caret"></b></a>
@@ -53,30 +58,29 @@
 					<li><a href="#">Remove a Book from the Library</a></li>
 					<li class="divider" id = "popular_books"></li>
 					<li><a href="#">View Top Books</a></li>
-
 				</ul>
 			</li>
-			{% else %}
 			{% endif %}
 			</ul>
 
 
 			<ul class="nav navbar-nav navbar-right">
+			{% if user %}
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Your Account<b class="caret"></b></a>
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user }} Account Info<b class="caret"></b></a>
 					<ul class="dropdown-menu">
-			<li><a href="#">View Your Currently Checked Out Books</a></li>
+						<li><a href="#">View Your Currently Checked Out Books</a></li>
 						<li><a href="#">View Current Fines</a></li>
-			<li><a href="#">Personal Info</a></li>
+						<li><a href="#">Personal Info</a></li>
 					</ul>
 				</li>
-		{% if user %}
-		<li><a href="/logout">Logout</a></li>
-		{% else %}
-		<li><a href="/login">Login</a></li>
-		{% endif %}
 
+				<li><a href="/logout">Logout</a></li>
+			{% else %}
+				<li><a href="/login">Login</a></li>
+			{% endif %}
 			</ul>
+
 
 	</div><!-- /.container-fluid -->
 </nav>

@@ -1,6 +1,10 @@
 CPSC 304
 ========
 
+Setup
+=====
+Install packages by running: pip install -r requirements.txt
+
 Contributors
 ============
 
