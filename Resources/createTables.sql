@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS BorrowerType (
   type varchar(7),
-  bookTimeLimit varchar(10),
+  bookTimeLimit int NOT NULL,
   PRIMARY KEY (type)
 );
 

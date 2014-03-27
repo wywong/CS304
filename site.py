@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 from flask import Flask, render_template
 from flask import request, Response, session, flash, redirect, url_for
 
