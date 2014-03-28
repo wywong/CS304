@@ -140,10 +140,13 @@ def addbook():
 
         row = [element.encode('utf-8') for element in row]
 
+        fieldNames = TableOperation.getFieldNames(db, 'Book')
+        session['result'] = [fieldNames, row]
+
         TableOperation.insertTuple(db, 'Book', tuple(row))
         TableOperation.insertTuple(db, 'BookCopy (callNumber, status)',
                 (callNum.encode('utf-8'), 'in'))
-        return redirect(url_for('index', user=None))
+        return redirect(url_for('result', user=g.userInfo[0], accType=g.userInfo[8]))
 
     return render_template('addbook.html', error=error,
                             user=g.userInfo[0], accType=g.userInfo[8])
