@@ -32,3 +32,16 @@ def showTable(conn, table):
     cur.execute(sql)
     return list(cur.fetchall())
 
+def getFieldNames(conn, table):
+    """
+    Pre:    conn     - database connection
+            table    - the table being queried
+
+    Post:   Returns the field names of table
+    """
+    cur = conn.cursor()
+    cur.execute("DESC %s" %(table))
+    rows = cur.fetchall()
+    names = [r[0] for r in rows]
+    return names
+

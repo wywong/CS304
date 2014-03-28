@@ -78,15 +78,23 @@ def login():
 def logout():
     # remove the username from the session if it's there
     session.pop('user_id', None)
-    return redirect(url_for('index'))
+    if g.userInfo:
+        return redirect(url_for('index'))
+
+@app.route('/result')
+def result():
+    """ Return the result of an insert """
+    return render_template('result.html',
+            user=g.userInfo[0], accType=g.userInfo[8])
+
 
 @app.route('/addborrower', methods=['POST', 'GET'])
 def addborrower():
     error = None
     if not g.userInfo:
-        return redirect(url_for('index', user=None))
+        return redirect(url_for('index', user=None, accType=None))
     elif g.userInfo[8] != 'clerk':
-        return redirect(url_for('index', user=g.userInfo[8]))
+        return redirect(url_for('index', user=g.userInfo[0], accType=g.userInfo[8]))
 
     if request.method == 'POST':
         bid = request.form[ 'bid' ]
@@ -102,9 +110,12 @@ def addborrower():
         row = (bid, passwd, bName, addr, phone, email, sNum, expiryDate, bType)
 
         row = [element.encode('utf-8') for element in row]
+        print row
 
+        fieldNames = TableOperation.getFieldNames(db, 'Borrower')
+        session['result'] = [fieldNames, row]
         TableOperation.insertTuple(db, 'Borrower', tuple(row))
-        return redirect(url_for('index', user=None))
+        return redirect(url_for('result', user=g.userInfo[0], accType=g.userInfo[8]))
 
     return render_template('addborrower.html', error=error,
                             user=g.userInfo[0], accType=g.userInfo[8])
