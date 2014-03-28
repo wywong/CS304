@@ -19,6 +19,23 @@ def insertTuple(conn, table, row):
     except:
         conn.rollback()
 
+def deleteTuple(conn, table, conds):
+    """
+    Pre:    conn     - database connection
+            table    - table to be inserted into
+            conds    - conditions for rows to be deleted
+
+    Post:   Deletes row(s) from table
+    """
+    sql = "DELETE FROM %s WHERE %s" % (table, str(row))
+    print sql + ';'
+    cur = conn.cursor()
+    try:
+        cur.execute(sql)
+        conn.commit()
+    except:
+        conn.rollback()
+
 def showTable(conn, table):
     """
     Pre:    conn     - database connection

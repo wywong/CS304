@@ -3,7 +3,8 @@
 <center>
 <h2>Add Book</h2>
 {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-<form action="{{ url_for('addbook') }}" method=post>
+<form action="{{ url_for('addbook') }}" method=post
+  onsubmit="return confirm('Are you sure you want to submit?')">
 	<dl>
 		<dt>Call Number:
 		<dd><input type=text name=callNum>
