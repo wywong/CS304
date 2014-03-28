@@ -1,14 +1,8 @@
 #!/usr/bin/python
 import MySQLdb
-from src import TableOperation
+from src import TableOperation, dbConn
 
-try:
-    db = MySQLdb.connect(host="localhost",
-                        user="testuser",
-                        passwd="01189998819991197253",
-                        db="cs304")
-except:
-    print "Error %d: %s" % (e.args[0], e.args[1])
+db = dbConn.dbConn()
 
 cur = db.cursor()
 

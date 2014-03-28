@@ -6,7 +6,7 @@ from flask import Flask, request, session, url_for, redirect, \
 from functools import wraps
 
 import MySQLdb
-from src import TableOperation
+from src import TableOperation, dbConn
 
 # hard coded clerk and librarian accounts
 accs = {
@@ -15,13 +15,7 @@ accs = {
         'lib1':['lib1', '1234', 'mel', None, None, None, None, None, 'librarian']
         }
 
-try:
-    db = MySQLdb.connect(host="localhost",
-                        user="testuser",
-                        passwd="01189998819991197253",
-                        db="cs304")
-except:
-    print "Error %d: %s" % (e.args[0], e.args[1])
+db = dbConn.dbConn()
 
 app = Flask(__name__)
 app.secret_key = 'totally not safe'

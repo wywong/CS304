@@ -11,6 +11,16 @@ Set up the virtual environment.
 
 Install packages by running: `pip install -r requirements.txt`
 
+Create a file database.cfg containing host, username, password, and the database name.
+
+For example:
+`
+localhost
+testuser
+01189998819991197253
+cs304
+`
+
 To run `python site.py`
 
 Open `localhost:5000` in the web browser of your choice.
