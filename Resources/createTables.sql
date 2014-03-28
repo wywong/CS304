@@ -24,29 +24,29 @@ CREATE TABLE IF NOT EXISTS Book (
   title varchar(40) NOT NULL,
   mainAuthor varchar(40) NOT NULL,
   publisher varchar(40) NOT NULL,
-  year int NOT NULL,
+  year YEAR NOT NULL,
   PRIMARY KEY (callNumber)
 );
 
 CREATE TABLE IF NOT EXISTS HasAuthor (
   callNumber varchar(40) NOT NULL,
   name varchar(40) NOT NULL,
-  PRIMARY KEY (callNumber, name),
+  PRIMARY KEY (callNumber),
   FOREIGN KEY (callNumber) REFERENCES Book(callNumber)
 );
 
 CREATE TABLE IF NOT EXISTS HasSubject (
   callNumber varchar(40) NOT NULL,
   subject varchar(40) NOT NULL,
-  PRIMARY KEY (callNumber, subject),
+  PRIMARY KEY (subject, callNumber),
   FOREIGN KEY (callNumber) REFERENCES Book(callNumber)
 );
 
 CREATE TABLE IF NOT EXISTS BookCopy (
   callNumber varchar(40) NOT NULL,
-  copyNo int NOT NULL,
+  copyNo int NOT NULL AUTO_INCREMENT,
   status varchar(7) NOT NULL,
-  PRIMARY KEY (callNumber, copyNo),
+  PRIMARY KEY (copyNo, callNumber),
   FOREIGN KEY (callNumber) REFERENCES Book(callNumber)
 );
 

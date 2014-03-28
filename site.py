@@ -8,6 +8,7 @@ from functools import wraps
 import MySQLdb
 from src import TableOperation
 
+# hard coded clerk and librarian accounts
 accs = {
         'clerk1':['clerk1', 'word', 'stan', None, None, None, None, None, 'clerk'],
         'clerk2':['clerk2', '1234', 'steve', None, None, None, None, None, 'clerk'],
@@ -68,7 +69,7 @@ def login():
             error = 'Invalid password'
         else:
             flash('You were logged in')
-            session['user_id'] = row if row else accs[u]
+            session['user_id'] = row if queryData else accs[u]
             print session['user_id']
             return redirect(url_for('index', user=user))
     return render_template('login.html', error=error)
@@ -82,6 +83,11 @@ def logout():
 @app.route('/addborrower', methods=['POST', 'GET'])
 def addborrower():
     error = None
+    if not g.userInfo:
+        return redirect(url_for('index', user=None))
+    elif g.userInfo[8] != 'clerk':
+        return redirect(url_for('index', user=g.userInfo[8]))
+
     if request.method == 'POST':
         bid = request.form[ 'bid' ]
         passwd = request.form[ 'passwd' ]
@@ -100,7 +106,36 @@ def addborrower():
         TableOperation.insertTuple(db, 'Borrower', tuple(row))
         return redirect(url_for('index', user=None))
 
-    return render_template('addborrower.html', error=error)
+    return render_template('addborrower.html', error=error,
+                            user=g.userInfo[0], accType=g.userInfo[8])
+
+@app.route('/addbook', methods=['POST', 'GET'])
+def addbook():
+    error = None
+    if not g.userInfo:
+        return redirect(url_for('index', user=None))
+    elif g.userInfo[8] != 'librarian':
+        return redirect(url_for('index', user=g.userInfo[8]))
+
+    if request.method == 'POST':
+        callNum = request.form[ 'callNum' ]
+        isbn = request.form[ 'isbn' ]
+        title = request.form[ 'title' ]
+        mainAuthor = request.form[ 'mainAuthor' ]
+        publisher = request.form[ 'publisher' ]
+        year = request.form[ 'year' ]
+
+        row = (callNum, isbn, title, mainAuthor, publisher, year)
+
+        row = [element.encode('utf-8') for element in row]
+
+        TableOperation.insertTuple(db, 'Book', tuple(row))
+        TableOperation.insertTuple(db, 'BookCopy (callNumber, status)',
+                (callNum.encode('utf-8'), 'in'))
+        return redirect(url_for('index', user=None))
+
+    return render_template('addbook.html', error=error,
+                            user=g.userInfo[0], accType=g.userInfo[8])
 
 if __name__ == '__main__':
     app.run(debug=True)

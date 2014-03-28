@@ -1,0 +1,24 @@
+{% extends "index.html" %}
+{% block content %}
+<center>
+<h2>Add Book</h2>
+{% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+<form action="{{ url_for('addbook') }}" method=post>
+	<dl>
+		<dt>Call Number:
+		<dd><input type=text name=callNum>
+		<dt>ISBN:
+		<dd><input type=text name=isbn>
+		<dt>Title:
+		<dd><input type=text name=title>
+		<dt>Main Author:
+		<dd><input type=text name=mainAuthor>
+		<dt>Publisher:
+		<dd><input type=text name=publisher>
+		<dt>Year:
+		<dd><input type=YEAR name=year>
+		<dd><input type=submit value="Add Book">
+	</dl>
+</form>
+</center>
+{% endblock %}
