@@ -6,3 +6,5 @@
 !README.md
 !*.html
 !*.py
+!*.txt
+env

@@ -3,7 +3,17 @@ CPSC 304
 
 Setup
 =====
-Install packages by running: pip install -r requirements.txt
+Set up the virtual environment.
+
+`virtualenv env`
+
+`. env/bin/activate`
+
+Install packages by running: `pip install -r requirements.txt`
+
+To run `python site.py`
+
+Open `localhost:5000` in the web browser of your choice.
 
 Contributors
 ============
