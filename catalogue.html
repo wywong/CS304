@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang=" en" >
+<head>
+	<meta charsets = "UTF-8" />
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+	<title> Catalogue </title>
+</head>
+<body>
+	<nav class="navbar navbar-default" role="navigation">
+	<div class="container-fluid">
+		
+		<div class="navbar-header">
+		  <a class="navbar-brand" href="index.html">Library App Home</a>
+		</div>
+   
+		<ul class="nav navbar-nav">
+			
+			<form class="navbar-form navbar-left" role="search">
+				<div class="form-group">
+					<input type="text" class="form-control" placeholder="Search for a Book">
+				</div>
+				<button type="submit" class="btn btn-small">Go</button>
+			</form>
+			
+			<li>
+			  <a href = "catalogue.html">Catalogue</a>
+			</li>
+
+			<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Checked Out Books<b class="caret"></b></a>
+				<ul class = "dropdown-menu">
+					<li><a href="#">Return a Book</a></li>
+					<li><a href="#">View Checked Out Books</a></li>
+					<li><a href="#">View Overdue Items</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Library<b class="caret"></b></a>
+				<ul class = "dropdown-menu">
+					<li><a href="#">Add a Book to the Library</a></li>
+					<li><a href="#">Remove a Book from the Library</a></li>
+					<li class="divider" id = "popular_books"></li>
+					<li><a href="#">View Top Books</a></li>
+					
+				</ul>
+			</li>
+      </ul>
+	  
+      
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Your Account<b class="caret"></b></a>
+          <ul class="dropdown-menu">
+			<li><a href="#">View Your Currently Checked Out Books</a></li>
+            <li><a href="#">View Current Fines</a></li>
+			<li><a href="#">Personal Info</a></li>
+          </ul>
+        </li>
+		<li><a href="#">Logout</a></li>
+		 
+      </ul>
+   
+  </div><!-- /.container-fluid -->
+</nav>
+<table class = "table table-striper table-hover">
+	<h1>Catalogue</h1>
+	<tr><th>Call Number</th><th>Title</th><th>Author</th><th>ISBN</th><th>Status</th><th>Check Out</th><th>Hold</th><th>Reserve</th></tr>
+	<tr><td>EF.65.10<td>Learning about HTML<td>Evan Friday<td>506548-34324-2343<td>Checked Out<td><button>Check out</button><td><button>Place on Hold</button><td><button>Reserve</button></tr>
+	<tr><td>EF.65.10<td>Learning about HTML<td>Evan Friday<td>506548-34324-2343<td>Checked Out<td><button>Check out</button><td><button>Place on Hold</button><td><button>Reserve</button></tr>
+	<tr><td>EF.65.10<td>Learning about HTML<td>Evan Friday<td>506548-34324-2343<td>Checked Out<td><button>Check out</button><td><button>Place on Hold</button><td><button>Reserve</button></tr>
+	<tr><td>EF.65.10<td>Learning about HTML<td>Evan Friday<td>506548-34324-2343<td>Checked Out<td><button>Check out</button><td><button>Place on Hold</button><td><button>Reserve</button></tr>
+	<tr><td>EF.65.10<td>Learning about HTML<td>Evan Friday<td>506548-34324-2343<td>Checked Out<td><button>Check out</button><td><button>Place on Hold</button><td><button>Reserve</button></tr>
+	<tr><td>EF.65.10<td>Learning about HTML<td>Evan Friday<td>506548-34324-2343<td>Checked Out<td><button>Check out</button><td><button>Place on Hold</button><td><button>Reserve</button></tr>
+	</table>
+</body>
+
+
+</html>
