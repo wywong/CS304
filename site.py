@@ -112,8 +112,8 @@ def addborrower():
         row = [element.encode('utf-8') for element in row]
         print row
 
-        fieldNames = TableOperation.getFieldNames(db, 'Borrower')
-        session['result'] = [fieldNames, row]
+        borrowerFields = TableOperation.getFieldNames(db, 'Borrower')
+        session['result'] = [[borrowerFields, row]]
         TableOperation.insertTuple(db, 'Borrower', tuple(row))
         return redirect(url_for('result', user=g.userInfo[0], accType=g.userInfo[8]))
 
@@ -140,16 +140,29 @@ def addbook():
 
         row = [element.encode('utf-8') for element in row]
 
-        fieldNames = TableOperation.getFieldNames(db, 'Book')
-        session['result'] = [fieldNames, row]
+        bookFields = TableOperation.getFieldNames(db, 'Book')
 
         TableOperation.insertTuple(db, 'Book', tuple(row))
         TableOperation.insertTuple(db, 'BookCopy (callNumber, status)',
                 (callNum.encode('utf-8'), 'in'))
+        bookCopyFields = TableOperation.getFieldNames(db, 'BookCopy')
+
+        #TODO Get proper copyNo
+        session['result'] = [[bookFields, row], [bookCopyFields, (callNum, 1, 'in')]]
+
         return redirect(url_for('result', user=g.userInfo[0], accType=g.userInfo[8]))
 
     return render_template('addbook.html', error=error,
                             user=g.userInfo[0], accType=g.userInfo[8])
+@app.route('/show')
+def show():
+    """ Displays the contents of table for debugging use """
+    table = request.args.get('table')
+    fieldNames = TableOperation.getFieldNames(db, table)
+    rows = TableOperation.showTable(db, table)
+    rows.insert(0, fieldNames)
+    session['result'] = [rows]
+    return render_template('result.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

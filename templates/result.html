@@ -1,13 +1,16 @@
 {% extends "index.html" %}
 {% block content %}
 <center>
-  <table border="1">
-  {% for row in session.pop('result', []) %}
-  <tr>
-    {% for item in row %}
-      <td style="padding:3px;">{{ item }}</td>
+  {% for a_table in session.pop('result', []) %}
+    <table border="1">
+    {% for row in a_table %}
+    <tr>
+      {% for item in row %}
+        <td style="padding:3px;">{{ item }}</td>
+      {% endfor %}
+    </tr>
     {% endfor %}
-  </tr>
+    <br>
   {% endfor %}
 </table>
 </center>

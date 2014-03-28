@@ -30,7 +30,8 @@ def showTable(conn, table):
     sql = "SELECT * FROM %s" % (table)
     print sql + ';'
     cur.execute(sql)
-    return list(cur.fetchall())
+    t = cur.fetchall()
+    return [list(l) for l in t]
 
 def getFieldNames(conn, table):
     """
@@ -44,4 +45,16 @@ def getFieldNames(conn, table):
     rows = cur.fetchall()
     names = [r[0] for r in rows]
     return names
+
+def getColumns(conn, table, cols):
+    """
+    Pre:    conn     - database connection
+            table    - the table being queried
+            cols     - the columns to be selected
+
+    Post:   Returns the columns of the fields selected
+    """
+    cur = conn.cursor()
+    cur.execute("SELECT %s FROM %S" %(cols, table))
+    return cur.fetchall()
 
