@@ -21,6 +21,8 @@ testuser
 cs304
 ```
 
+Set up the appropriate tables by running: `python setup.py`
+
 To run `python site.py`
 
 Open `localhost:5000` in the web browser of your choice.
