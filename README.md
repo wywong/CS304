@@ -21,6 +21,8 @@ testuser
 cs304
 ```
 
+install flask by running `pip install Flask`
+
 To run `python site.py`
 
 Open `localhost:5000` in the web browser of your choice.
