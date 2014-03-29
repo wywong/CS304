@@ -36,7 +36,7 @@ def deleteTuple(conn, table, conds):
     except:
         conn.rollback()
 
-def selectFrom(conn, table, cols, conds):
+def sfw(conn, table, cols, conds):
     """
     Pre:    conn     - database connection
             table    - table to be inserted into
@@ -49,7 +49,7 @@ def selectFrom(conn, table, cols, conds):
     sql = "SELECT %s FROM %s WHERE %s" % (', '.join(cols), table, conds)
     print sql
     cur.execute(sql)
-    return cur.fetchall()
+    return list(cur.fetchall())
 
 def showTable(conn, table):
     """

@@ -130,12 +130,12 @@ def addbook():
         row = (callNum, isbn, title, mainAuthor, publisher, year)
 
         # Check if book already exists
-        if TableOperation.selectFrom(db, 'Book', ['callNumber'],
+        if TableOperation.sfw(db, 'Book', ['callNumber'],
                                     "callNumber = '%s'" %(callNum)):
             # Insert new copy
             bookCopyFields = TableOperation.getFieldNames(db, 'BookCopy')
 
-            numCopies = int(TableOperation.selectFrom(db, 'BookCopy', ['callNumber', 'MAX(copyNo)'],
+            numCopies = int(TableOperation.sfw(db, 'BookCopy', ['callNumber', 'MAX(copyNo)'],
                                 "callNumber = '%s'" % (callNum))[0][1]) + 1
             bCopy = (callNum, numCopies, 'in')
             TableOperation.insertTuple(db, 'BookCopy', bCopy)
@@ -169,6 +169,17 @@ def catalogue():
     rows = TableOperation.getColumns(db,'Book','*')
     session['catalogue'] = [rows]
     return render_template('catalogue.html')
+
+@app.route('/viewcart')
+def viewcart():
+    """ Displays logged in borrowers cart """
+    fieldNames = TableOperation.getFieldNames(db,'Book')
+    rows = TableOperation.sfw(db, 'Book', ['*'],
+            "callNumber IN (SELECT callNumber FROM Cart WHERE bid = '%s')"
+            % (g.userInfo[0]))
+    rows.insert(0, fieldNames)
+    session['result'] = [rows]
+    return redirect(url_for('result', user=g.userInfo[0], accType=g.userInfo[8]))
 
 @app.route('/show')
 def show():
