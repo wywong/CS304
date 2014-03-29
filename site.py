@@ -91,20 +91,17 @@ def addborrower():
         return redirect(url_for('index', user=g.userInfo[0], accType=g.userInfo[8]))
 
     if request.method == 'POST':
-        bid = request.form[ 'bid' ]
-        passwd = request.form[ 'passwd' ]
-        bName = request.form[ 'name' ]
-        addr = request.form[ 'addr' ]
-        phone = request.form[ 'phone' ]
-        email = request.form[ 'email' ]
-        sNum = request.form[ 'sNum' ]
-        expiryDate = request.form[ 'expiryDate' ]
-        bType = request.form[ 'bType' ]
+        bid = request.form[ 'bid' ].encode('utf-8')
+        passwd = request.form[ 'passwd' ].encode('utf-8')
+        bName = request.form[ 'name' ].encode('utf-8')
+        addr = request.form[ 'addr' ].encode('utf-8')
+        phone = request.form[ 'phone' ].encode('utf-8')
+        email = request.form[ 'email' ].encode('utf-8')
+        sNum = request.form[ 'sNum' ].encode('utf-8')
+        expiryDate = request.form[ 'expiryDate' ].encode('utf-8')
+        bType = request.form[ 'bType' ].encode('utf-8')
 
         row = (bid, passwd, bName, addr, phone, email, sNum, expiryDate, bType)
-
-        row = [element.encode('utf-8') for element in row]
-        print row
 
         borrowerFields = TableOperation.getFieldNames(db, 'Borrower')
         session['result'] = [[borrowerFields, row]]
@@ -123,31 +120,48 @@ def addbook():
         return redirect(url_for('index', user=g.userInfo[8]))
 
     if request.method == 'POST':
-        callNum = request.form[ 'callNum' ]
-        isbn = request.form[ 'isbn' ]
-        title = request.form[ 'title' ]
-        mainAuthor = request.form[ 'mainAuthor' ]
-        publisher = request.form[ 'publisher' ]
-        year = request.form[ 'year' ]
+        callNum = request.form[ 'callNum' ].encode('utf-8')
+        isbn = request.form[ 'isbn' ].encode('utf-8')
+        title = request.form[ 'title' ].encode('utf-8')
+        mainAuthor = request.form[ 'mainAuthor' ].encode('utf-8')
+        publisher = request.form[ 'publisher' ].encode('utf-8')
+        year = request.form[ 'year' ].encode('utf-8')
 
         row = (callNum, isbn, title, mainAuthor, publisher, year)
 
-        row = [element.encode('utf-8') for element in row]
+        # Check if book already exists
+        if TableOperation.selectFrom(db, 'Book', ['callNumber'],
+                                    "callNumber = '%s'" %(callNum)):
+            # Insert new copy
+            bookCopyFields = TableOperation.getFieldNames(db, 'BookCopy')
 
-        bookFields = TableOperation.getFieldNames(db, 'Book')
+            numCopies = int(TableOperation.selectFrom(db, 'BookCopy', ['callNumber', 'MAX(copyNo)'],
+                                "callNumber = '%s'" % (callNum))[0][1]) + 1
+            bCopy = (callNum, numCopies, 'in')
+            TableOperation.insertTuple(db, 'BookCopy', bCopy)
 
-        TableOperation.insertTuple(db, 'Book', tuple(row))
-        TableOperation.insertTuple(db, 'BookCopy (callNumber, status)',
-                (callNum.encode('utf-8'), 'in'))
-        bookCopyFields = TableOperation.getFieldNames(db, 'BookCopy')
+            session['result'] = [[bookCopyFields, bCopy]]
+        else:
+            # Insert new Book and the first book copy
+            bookFields = TableOperation.getFieldNames(db, 'Book')
+            TableOperation.insertTuple(db, 'Book', tuple(row))
 
-        #TODO Get proper copyNo
-        session['result'] = [[bookFields, row], [bookCopyFields, (callNum, 1, 'in')]]
+            bookCopyFields = TableOperation.getFieldNames(db, 'BookCopy')
+            bCopy = (callNum, 1, 'in')
+            TableOperation.insertTuple(db, 'BookCopy', bCopy)
+
+            session['result'] = [[bookFields, row], [bookCopyFields, bCopy]]
+
 
         return redirect(url_for('result', user=g.userInfo[0], accType=g.userInfo[8]))
 
     return render_template('addbook.html', error=error,
                             user=g.userInfo[0], accType=g.userInfo[8])
+
+@app.route('/myborrowed')
+def myborrowed():
+    return redirect(url_for('result', user=g.userInfo[0], accType=g.userInfo[8]))
+
 @app.route('/show')
 def show():
     """ Displays the contents of table for debugging use """
