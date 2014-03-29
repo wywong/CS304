@@ -87,6 +87,6 @@ def getColumns(conn, table, cols):
     Post:   Returns the columns of the fields selected
     """
     cur = conn.cursor()
-    cur.execute("SELECT %s FROM %S" %(cols, table))
+    cur.execute("SELECT %s FROM %s" %(cols, table))
     return cur.fetchall()
 

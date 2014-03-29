@@ -10,9 +10,9 @@ from src import TableOperation, dbConn
 
 # hard coded clerk and librarian accounts
 accs = {
-        'clerk1':['clerk1', 'word', 'stan', None, None, None, None, None, 'clerk'],
-        'clerk2':['clerk2', '1234', 'steve', None, None, None, None, None, 'clerk'],
-        'lib1':['lib1', '1234', 'mel', None, None, None, None, None, 'librarian']
+        'clerk1':['clerk1', '1234', 'evan', None, None, None, None, None, 'clerk'],
+        'clerk2':['clerk2', '1234', 'shibo', None, None, None, None, None, 'clerk'],
+        'lib1':['lib1', '1234', 'wilson', None, None, None, None, None, 'librarian']
         }
 
 db = dbConn.dbConn()
@@ -161,6 +161,14 @@ def addbook():
 @app.route('/myborrowed')
 def myborrowed():
     return redirect(url_for('result', user=g.userInfo[0], accType=g.userInfo[8]))
+
+@app.route('/catalogue')
+def catalogue():
+    """ Displays search results, and allows users to check out books """
+    fieldnames = TableOperation.getFieldNames(db,'Book')
+    rows = TableOperation.getColumns(db,'Book','*')
+    session['catalogue'] = [rows]
+    return render_template('catalogue.html')
 
 @app.route('/show')
 def show():
