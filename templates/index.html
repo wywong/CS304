@@ -12,69 +12,92 @@
 <body>
 	<nav class="navbar navbar-default" role="navigation">
 	<div class="container-fluid">
-		
+
 		<div class="navbar-header">
-		  <a class="navbar-brand" href="#">Library App</a>
+			<a class="navbar-brand" href="#">Library App</a>
 		</div>
-   
+
 		<ul class="nav navbar-nav">
-			
+
 			<form class="navbar-form navbar-left" role="search">
 				<div class="form-group">
 					<input type="text" class="form-control" placeholder="Search for a Book">
 				</div>
 				<button type="submit" class="btn btn-small">Go</button>
 			</form>
-			
+
 			<li class="dropdown">
-			  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Book Actions<b class="caret"></b></a>
-			  <ul class="dropdown-menu">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Book Actions<b class="caret"></b></a>
+				<ul class="dropdown-menu">
 				<li><a href="#">Check out a Book</a></li>
 				<li><a href="#">Place a Book on Hold</a></li>
-				<li class="divider" id = "reserve_a_book"></li>
-				<li><a href="#">Place a Book on Reserve</a></li>
-			  </ul>
+				</ul>
 			</li>
 
+			{% if accType == 'clerk' or accType == 'borrower' %}
 			<li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Checked Out Books<b class="caret"></b></a>
 				<ul class = "dropdown-menu">
-					<li><a href="#">Return a Book</a></li>
-					<li><a href="#">View Checked Out Books</a></li>
+					{% if accType == 'clerk' %}
+					<li><a href="#">Process Book Return</a></li>
+					{% endif %}
+					{% if accType == 'borrower' %}
+					<li><a href="/myborrowed">View Checked Out Books</a></li>
+					{% endif %}
+					{% if accType == 'clerk' %}
 					<li><a href="#">View Overdue Items</a></li>
+					{% endif %}
 				</ul>
 			</li>
-			
+			{% endif %}
+
+			{% if accType == 'clerk' %}
+			<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Borrowers<b class="caret"></b></a>
+				<ul class = "dropdown-menu">
+					<li><a href="/addborrower">Add Borrower</a></li>
+				</ul>
+			</li>
+			{% endif %}
+
+			{% if accType == 'librarian' %}
 			<li class="dropdown">
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Library<b class="caret"></b></a>
 				<ul class = "dropdown-menu">
-					<li><a href="#">Add a Book to the Library</a></li>
+					<li><a href="/addbook">Add a Book to the Library</a></li>
 					<li><a href="#">Remove a Book from the Library</a></li>
 					<li class="divider" id = "popular_books"></li>
 					<li><a href="#">View Top Books</a></li>
-					
 				</ul>
 			</li>
-      </ul>
-	  
-      
-      <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Your Account<b class="caret"></b></a>
-          <ul class="dropdown-menu">
-			<li><a href="#">View Your Currently Checked Out Books</a></li>
-            <li><a href="#">View Current Fines</a></li>
-			<li><a href="#">Personal Info</a></li>
-          </ul>
-        </li>
-		<li><a href="#">Logout</a></li>
-		 
-      </ul>
-   
-  </div><!-- /.container-fluid -->
+			{% endif %}
+			</ul>
+
+
+			<ul class="nav navbar-nav navbar-right">
+			{% if user %}
+				<li class="dropdown">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user }} Account Info<b class="caret"></b></a>
+					<ul class="dropdown-menu">
+						<li><a href="#">View Your Currently Checked Out Books</a></li>
+						<li><a href="#">View Current Fines</a></li>
+						<li><a href="#">Personal Info</a></li>
+					</ul>
+				</li>
+
+				<li><a href="/logout">Logout</a></li>
+			{% else %}
+				<li><a href="/login">Login</a></li>
+			{% endif %}
+			</ul>
+
+
+	</div><!-- /.container-fluid -->
 </nav>
-	<center><h1>Welcome to the Library</h1></center>
-	
+
+	{% block content %}
+	{% endblock %}
+
 </body>
 
 

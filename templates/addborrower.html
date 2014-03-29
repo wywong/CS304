@@ -1,0 +1,35 @@
+{% extends "index.html" %}
+{% block content %}
+<center>
+<h2>Add Borrower</h2>
+{% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+<form action="{{ url_for('addborrower') }}" method=post
+  onsubmit="return confirm('Are you sure you want to submit?')">
+	<dl>
+		<dt>bid:
+		<dd><input type=text name=bid>
+		<dt>password:
+		<dd><input type=text name=passwd>
+		<dt>name:
+		<dd><input type=text name=name>
+		<dt>address:
+		<dd><input type=text name=addr>
+		<dt>phone:
+		<dd><input type=text name=phone>
+		<dt>email:
+		<dd><input type=text name=email>
+		<dt>SIN/Student Number:
+		<dd><input type=text name=sNum>
+		<dt>Expiry Date:
+		<dd><input type=date name=expiryDate>
+		<dt>Borrower Type:
+      <select name="bType">
+      <option value="student" selected>student</option>
+      <option value="faculty">faculty</option>
+      <option value="staff">staff</option>
+      </select>
+		<dd><input type=submit value=Create>
+	</dl>
+</form>
+</center>
+{% endblock %}
