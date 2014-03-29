@@ -1,104 +1,116 @@
 <!doctype html>
 <html lang=" en" >
-<head>
-	<meta charsets = "UTF-8" />
-	<!-- Latest compiled and minified CSS -->
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
-	<!-- Latest compiled and minified JavaScript -->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-	<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-	<title> Library </title>
-</head>
-<body>
-	<nav class="navbar navbar-default" role="navigation">
-	<div class="container-fluid">
+		<head>
+				<meta charsets = "UTF-8" />
+				<!-- Latest compiled and minified CSS -->
+				<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+				<!-- Latest compiled and minified JavaScript -->
+				<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+				<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+				<title> Library </title>
+		</head>
+		<body>
+				<nav class="navbar navbar-default" role="navigation">
+				<div class="container-fluid">
 
-		<div class="navbar-header">
-			<a class="navbar-brand" href="#">Library App</a>
-		</div>
+						<div class="navbar-header">
+								<a class="navbar-brand" href="#">Library App</a>
+						</div>
 
-		<ul class="nav navbar-nav">
+						<ul class="nav navbar-nav">
 
-			<form class="navbar-form navbar-left" role="search">
-				<div class="form-group">
-					<input type="text" class="form-control" placeholder="Search for a Book">
-				</div>
-				<button type="submit" class="btn btn-small">Go</button>
-			</form>
+								<form class="navbar-form navbar-left" role="search">
 
-			<li class="dropdown">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown">Book Actions<b class="caret"></b></a>
-				<ul class="dropdown-menu">
-				<li><a href="#">Check out a Book</a></li>
-				<li><a href="#">Place a Book on Hold</a></li>
-				</ul>
-			</li>
+										<div class="btn-group">
+												<button class="btn btn-info dropdown-toggle" data-toggle="dropdown">
+														Books
+														<span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu">
+														<li><a href="#">Subject</a></li>
+														<li><a href="#">Author</a></li>
+												</ul>
+										</div>
 
-			{% if accType == 'clerk' or accType == 'borrower' %}
-			<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Checked Out Books<b class="caret"></b></a>
-				<ul class = "dropdown-menu">
-					{% if accType == 'clerk' %}
-					<li><a href="#">Process Book Return</a></li>
-					{% endif %}
-					{% if accType == 'borrower' %}
-					<li><a href="/myborrowed">View Checked Out Books</a></li>
-					{% endif %}
-					{% if accType == 'clerk' %}
-					<li><a href="#">View Overdue Items</a></li>
-					{% endif %}
-				</ul>
-			</li>
-			{% endif %}
+										<div class="form-group">
+												<input type="text" class="form-control" placeholder="Search for a Book">
+										</div>
+										<button type="submit" class="btn btn-small">Go</button>
+								</form>
 
-			{% if accType == 'clerk' %}
-			<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Borrowers<b class="caret"></b></a>
-				<ul class = "dropdown-menu">
-					<li><a href="/addborrower">Add Borrower</a></li>
-				</ul>
-			</li>
-			{% endif %}
+								<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Book Actions<b class="caret"></b></a>
+								<ul class="dropdown-menu">
+										<li><a href="#">Check out a Book</a></li>
+										<li><a href="#">Place a Book on Hold</a></li>
+								</ul>
+								</li>
 
-			{% if accType == 'librarian' %}
-			<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Library<b class="caret"></b></a>
-				<ul class = "dropdown-menu">
-					<li><a href="/addbook">Add a Book to the Library</a></li>
-					<li><a href="#">Remove a Book from the Library</a></li>
-					<li class="divider" id = "popular_books"></li>
-					<li><a href="#">View Top Books</a></li>
-				</ul>
-			</li>
-			{% endif %}
-			</ul>
+								{% if accType == 'clerk' or accType == 'borrower' %}
+								<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Checked Out Books<b class="caret"></b></a>
+								<ul class = "dropdown-menu">
+										{% if accType == 'clerk' %}
+										<li><a href="#">Process Book Return</a></li>
+										{% endif %}
+										{% if accType == 'borrower' %}
+										<li><a href="/myborrowed">View Checked Out Books</a></li>
+										{% endif %}
+										{% if accType == 'clerk' %}
+										<li><a href="#">View Overdue Items</a></li>
+										{% endif %}
+								</ul>
+								</li>
+								{% endif %}
 
+								{% if accType == 'clerk' %}
+								<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Borrowers<b class="caret"></b></a>
+								<ul class = "dropdown-menu">
+										<li><a href="/addborrower">Add Borrower</a></li>
+								</ul>
+								</li>
+								{% endif %}
 
-			<ul class="nav navbar-nav navbar-right">
-			{% if user %}
-				<li class="dropdown">
-				<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user }} Account Info<b class="caret"></b></a>
-					<ul class="dropdown-menu">
-						<li><a href="#">View Your Currently Checked Out Books</a></li>
-						<li><a href="#">View Current Fines</a></li>
-						<li><a href="#">Personal Info</a></li>
-					</ul>
-				</li>
-
-				<li><a href="/logout">Logout</a></li>
-			{% else %}
-				<li><a href="/login">Login</a></li>
-			{% endif %}
-			</ul>
+								{% if accType == 'librarian' %}
+								<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Library<b class="caret"></b></a>
+								<ul class = "dropdown-menu">
+										<li><a href="/addbook">Add a Book to the Library</a></li>
+										<li><a href="#">Remove a Book from the Library</a></li>
+										<li class="divider" id = "popular_books"></li>
+										<li><a href="#">View Top Books</a></li>
+								</ul>
+								</li>
+								{% endif %}
+						</ul>
 
 
-	</div><!-- /.container-fluid -->
-</nav>
+						<ul class="nav navbar-nav navbar-right">
+								{% if user %}
+								<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user }} Account Info<b class="caret"></b></a>
+								<ul class="dropdown-menu">
+										<li><a href="#">View Your Currently Checked Out Books</a></li>
+										<li><a href="#">View Current Fines</a></li>
+										<li><a href="#">Personal Info</a></li>
+								</ul>
+								</li>
 
-	{% block content %}
-	{% endblock %}
+								<li><a href="/logout">Logout</a></li>
+								{% else %}
+								<li><a href="/login">Login</a></li>
+								{% endif %}
+						</ul>
 
-</body>
+
+				</div><!-- /.container-fluid -->
+				</nav>
+
+				{% block content %}
+				{% endblock %}
+
+		</body>
 
 
 </html>
