@@ -11,7 +11,7 @@ Set up the virtual environment.
 
 Install packages by running: `pip install -r requirements.txt`
 
-Create a file database.cfg containing host, username, password, and the database name.
+Create a file `database.cfg` containing `host`, `username`, `password`, and the `database name`.
 
 For example:
 ```
