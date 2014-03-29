@@ -10,9 +10,9 @@ from src import TableOperation, dbConn
 
 # hard coded clerk and librarian accounts
 accs = {
-        'clerk1':['clerk1', 'word', 'stan', None, None, None, None, None, 'clerk'],
-        'clerk2':['clerk2', '1234', 'steve', None, None, None, None, None, 'clerk'],
-        'lib1':['lib1', '1234', 'mel', None, None, None, None, None, 'librarian']
+        'clerk1':['clerk1', '1234', 'evan', None, None, None, None, None, 'clerk'],
+        'clerk2':['clerk2', '1234', 'shibo', None, None, None, None, None, 'clerk'],
+        'lib1':['lib1', '1234', 'mel', 'wilson', None, None, None, None, 'librarian']
         }
 
 db = dbConn.dbConn()
@@ -43,7 +43,7 @@ def login():
     if request.method == 'POST':
         u = request.form['username'].encode('utf-8')
         p = request.form['password'].encode('utf-8')
-        sql = "SELECT * FROM Borrower WHERE bid = '%s'" % (u)
+        sql = "SELECT * FROM Borrower WHERE name = '%s'" % (u)
         cur.execute(sql)
         queryData = cur.fetchall()
         if queryData:
