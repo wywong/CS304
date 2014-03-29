@@ -14,7 +14,7 @@
             <th>
         {% endif %}
         {% for row in a_table %}
-        <tr>
+        <tr id = "row-{{ loop.index }}">
             {% for item in row %}
                 <td>{{ item }}</td>
             {% endfor %}
