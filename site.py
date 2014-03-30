@@ -168,7 +168,8 @@ def catalogue():
     fieldnames = TableOperation.getFieldNames(db,'Book')
     rows = TableOperation.getColumns(db,'Book','*')
     session['catalogue'] = [rows]
-    return render_template('catalogue.html')
+    return render_template('catalogue.html',
+                            user=g.userInfo[0], accType=g.userInfo[8])
 
 @app.route('/show')
 def show():
