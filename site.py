@@ -43,9 +43,7 @@ def login():
     if request.method == 'POST':
         u = request.form['username'].encode('utf-8')
         p = request.form['password'].encode('utf-8')
-        sql = "SELECT * FROM Borrower WHERE bid = '%s'" % (u)
-        cur.execute(sql)
-        queryData = cur.fetchall()
+        queryData = TableOperation.sfw(db, 'Borrower', ['*'], "bid = '%s'" % (u))
         if queryData:
             row = queryData[0]
             user = row[0]
@@ -172,19 +170,21 @@ def catalogue():
     return render_template('catalogue.html', user=g.userInfo[0], accType=g.userInfo[8])
 
 @app.route('/viewcart')
-def viewcart():
-    """ Displays logged in borrowers cart """
+@app.route('/viewcart/<bid>')
+def viewcart(bid=None):
+    """ Displays logged in borrowers cart or specified borrowers cart"""
+    if bid:
+        _bid = bid
+    else:
+        _bid = g.userInfo[0]
     fieldNames = TableOperation.getFieldNames(db,'Book')
     rows = TableOperation.sfw(db, 'Book', ['*'],
-            "callNumber IN (SELECT callNumber FROM Cart WHERE bid = '%s')"
-            % (g.userInfo[0]))
-    rows.insert(0, fieldNames)
-    session['result'] = [rows]
-    return redirect(url_for('result', user=g.userInfo[0], accType=g.userInfo[8]))
+            "callNumber IN (SELECT callNumber FROM Cart WHERE bid = '%s')" % (_bid))
+    session['cart'] = [rows]
+    return render_template('cart.html', user=g.userInfo[0], accType=g.userInfo[8])
 
 @app.route('/addtocart', methods=['POST', 'GET'])
 def addtocart():
-    error = None
     if not g.userInfo:
         return redirect(url_for('index', user=None))
     if request.method == 'POST':
@@ -192,10 +192,44 @@ def addtocart():
         selectable = session['catquery']
 
         rows = [selectable[int(s)] for s in selected]
-        rows.insert(0, TableOperation.getFieldNames(db, 'Book'))
-        session['result'] = [rows]
+        for r in rows:
+            TableOperation.insertTuple(db, 'Cart', (g.userInfo[0], r[0]))
 
-        return redirect(url_for('viewcart', user=g.userInfo[0], accType=g.userInfo[8]))
+    return redirect(url_for('viewcart', user=g.userInfo[0], accType=g.userInfo[8]))
+
+@app.route('/cartaction', methods=['POST', 'GET'])
+def cartaction():
+    """ Perform cartaction"""
+    if not g.userInfo:
+        return redirect(url_for('index', user=None))
+    error = None
+    if request.method == 'POST':
+        if g.userInfo[8] in ['clerk']:
+            bid = request.form['bid'].encode('utf-8')
+            if TableOperation.sfw(db, 'Borrower', ['*'], "bid = '%s'" % (bid)):
+                return redirect("viewcart/%s" %(bid))
+            else:
+                error = "Invalid bid"
+
+    return render_template('cartaction.html', error=error,
+                     user=g.userInfo[0], accType=g.userInfo[8])
+
+@app.route('/removefromcart', methods=['POST', 'GET'])
+def removefromcart():
+    if not g.userInfo:
+        return redirect(url_for('index', user=None))
+    if request.method == 'POST':
+        if bid:
+            _bid = bid
+        else:
+            _bid = g.userInfo[0]
+        selected = request.form.keys()
+        selectable = session['catquery']
+
+        remove = [selectable[int(s)] for s in selected]
+        for r in rows:
+            TableOperation.deleteTuple(db, 'Cart',
+                    "bid = '%s' AND callNumber = '%s'" %(bid, r[0]))
 
     return redirect(url_for('viewcart', user=g.userInfo[0], accType=g.userInfo[8]))
 

@@ -27,7 +27,7 @@ def deleteTuple(conn, table, conds):
 
     Post:   Deletes row(s) from table
     """
-    sql = "DELETE FROM %s WHERE %s" % (table, str(row))
+    sql = "DELETE FROM %s WHERE %s" % (table, str(conds))
     print sql + ';'
     cur = conn.cursor()
     try:

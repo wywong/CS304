@@ -1,0 +1,14 @@
+{% extends "index.html" %}
+{% block content %}
+<center>
+<h2>Borrower Check</h2>
+{% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
+<form action="{{ url_for('cartaction') }}" method=post>
+	<dl>
+		<dt>bid:
+		<dd><input type=text name=bid>
+		<dd><input type=submit value="View Cart">
+	</dl>
+</form>
+</center>
+{% endblock %}

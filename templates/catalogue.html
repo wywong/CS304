@@ -4,7 +4,7 @@
 	<form action="{{ url_for('addtocart') }}" method=post>
 		<dl>
     <table class = "table table-striper table-hover">
-        {% if accType %}
+        {% if accType in ['student', 'faculty', 'staff'] %}
             <th>
         {% endif %}
         <th>Call Number</th>
@@ -23,7 +23,9 @@
 					{% endfor %}
         </tr>
         {% endfor %}
-		<dd><input type=submit value="Add to Cart">
+      {% if accType in ['student', 'faculty', 'staff'] %}
+        <dd><input type=submit value="Add to Cart">
+      {% endif %}
     {% endfor %}
 		</dl>
 	</form>
