@@ -174,9 +174,9 @@ def show():
 
 @app.route('/search')
 def search():
-		"""Display the keyed in book information"""
-	   = request.form[ 'title' ].encode('utf-8')
-		return redirect(url_for('result', user=g.userInfo[0], accType=g.userInfo[8]))
+    """Display the keyed in book information"""
+    # = request.form[ 'title' ].encode('utf-8')
+    return redirect(url_for('result', user=g.userInfo[0], accType=g.userInfo[8]))
 
 if __name__ == '__main__':
     app.run(debug=True)
