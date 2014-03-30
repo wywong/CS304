@@ -72,10 +72,11 @@
 			<ul class="nav navbar-nav navbar-right">
 			{% if user %}
 				{% if accType in ['student', 'faculty', 'staff'] %}
+				<li><a href="/viewcart">View Cart ({%if cart_item_count %}{{ cart_item_count }}{% else %}0{% endif %})</a></li>
 				<li class="dropdown">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user }} Account Info<b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						<li><a href="/viewcart">View Cart</a></li>
+						
 						<li><a href="#">View Your Currently Checked Out Books</a></li>
 						<li><a href="#">View Current Fines</a></li>
 						<li><a href="#">Personal Info</a></li>
