@@ -27,7 +27,7 @@ def deleteTuple(conn, table, conds):
 
     Post:   Deletes row(s) from table
     """
-    sql = "DELETE FROM %s WHERE %s" % (table, str(row))
+    sql = "DELETE FROM %s WHERE %s" % (table, str(conds))
     print sql + ';'
     cur = conn.cursor()
     try:
@@ -36,7 +36,7 @@ def deleteTuple(conn, table, conds):
     except:
         conn.rollback()
 
-def selectFrom(conn, table, cols, conds):
+def sfw(conn, table, cols, conds):
     """
     Pre:    conn     - database connection
             table    - table to be inserted into
@@ -49,7 +49,7 @@ def selectFrom(conn, table, cols, conds):
     sql = "SELECT %s FROM %s WHERE %s" % (', '.join(cols), table, conds)
     print sql
     cur.execute(sql)
-    return cur.fetchall()
+    return [ list(l) for l in cur.fetchall() ]
 
 def showTable(conn, table):
     """
@@ -82,11 +82,11 @@ def getColumns(conn, table, cols):
     """
     Pre:    conn     - database connection
             table    - the table being queried
-            cols     - the columns to be selected
+            cols     - list of columns to be selected
 
     Post:   Returns the columns of the fields selected
     """
     cur = conn.cursor()
-    cur.execute("SELECT %s FROM %s" %(cols, table))
-    return cur.fetchall()
+    cur.execute("SELECT %s FROM %s" %(', '.join(cols), table))
+    return [list(l) for l in cur.fetchall()]
 
