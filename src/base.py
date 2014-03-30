@@ -69,33 +69,3 @@ def result():
     """ Return the result of an insert """
     return render_template('result.html',
             user=g.userInfo[0], accType=g.userInfo[8])
-
-@base_page.route('/addborrower', methods=['POST', 'GET'])
-def addborrower():
-    error = None
-    if not g.userInfo:
-        return redirect(url_for('.index', user=None, accType=None))
-    elif g.userInfo[8] != 'clerk':
-        return redirect(url_for('.index', user=g.userInfo[0], accType=g.userInfo[8]))
-
-    if request.method == 'POST':
-        bid = request.form[ 'bid' ].encode('utf-8')
-        passwd = request.form[ 'passwd' ].encode('utf-8')
-        bName = request.form[ 'name' ].encode('utf-8')
-        addr = request.form[ 'addr' ].encode('utf-8')
-        phone = request.form[ 'phone' ].encode('utf-8')
-        email = request.form[ 'email' ].encode('utf-8')
-        sNum = request.form[ 'sNum' ].encode('utf-8')
-        expiryDate = request.form[ 'expiryDate' ].encode('utf-8')
-        bType = request.form[ 'bType' ].encode('utf-8')
-
-        row = (bid, passwd, bName, addr, phone, email, sNum, expiryDate, bType)
-
-        borrowerFields = TableOperation.getFieldNames(db, 'Borrower')
-        session['result'] = [[borrowerFields, row]]
-        TableOperation.insertTuple(db, 'Borrower', tuple(row))
-        return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8]))
-
-    return render_template('addborrower.html', error=error,
-                            user=g.userInfo[0], accType=g.userInfo[8])
-
