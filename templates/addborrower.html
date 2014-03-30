@@ -3,7 +3,7 @@
 <center>
 <h2>Add Borrower</h2>
 {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-<form action="{{ url_for('addborrower') }}" method=post
+<form action="{{ url_for('base_page.addborrower') }}" method=post
   onsubmit="return confirm('Are you sure you want to submit?')">
 	<dl>
 		<dt>bid:

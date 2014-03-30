@@ -2,7 +2,7 @@
 {% block content %}
 <center>
   {% for a_table in session.pop('result', []) %}
-    <table border="1">
+    <table class = "table table-striper table-hover">
     {% for row in a_table %}
     <tr>
       {% for item in row %}

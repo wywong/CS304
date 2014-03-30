@@ -1,0 +1,33 @@
+{% extends "index.html" %}
+{% block content %}
+{% for a_table in session.pop('catalogue', []) %}
+	<form action="{{ url_for('cart_page.addtocart') }}" method=post>
+		<dl>
+    <table class = "table table-striper table-hover">
+        {% if accType in ['student', 'faculty', 'staff'] %}
+            <th>
+        {% endif %}
+        <th>Call Number</th>
+        <th>ISBN</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Publisher</th>
+        <th>Year</th>
+        {% for row in a_table %}
+        <tr>
+					{% if accType in ['student', 'faculty', 'staff'] %}
+						<td><dd><input type="checkbox" name="{{loop.index-1}}"></td>
+					{% endif %}
+					{% for item in row %}
+						<td>{{ item }}</td>
+					{% endfor %}
+        </tr>
+        {% endfor %}
+      {% if accType in ['student', 'faculty', 'staff'] %}
+        <dd><input type=submit value="Add to Cart">
+      {% endif %}
+    {% endfor %}
+		</dl>
+	</form>
+</table>
+{% endblock %}
