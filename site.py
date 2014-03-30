@@ -72,8 +72,8 @@ def login():
 def logout():
     # remove the username from the session if it's there
     session.pop('user_id', None)
-    if g.userInfo:
-        return redirect(url_for('index'))
+    g.userInfo = None
+    return redirect(url_for('index'))
 
 @app.route('/result')
 def result():
@@ -117,7 +117,7 @@ def addbook():
     if not g.userInfo:
         return redirect(url_for('index', user=None))
     elif g.userInfo[8] != 'librarian':
-        return redirect(url_for('index', user=g.userInfo[8]))
+        return redirect(url_for('index', user=g.userInfo[8], accType=g.userInfo[8]))
 
     if request.method == 'POST':
         callNum = request.form[ 'callNum' ].encode('utf-8')
