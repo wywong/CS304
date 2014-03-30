@@ -57,11 +57,9 @@ def bidcheck():
         if g.userInfo[8] in ['clerk']:
             bid = request.form['bid'].encode('utf-8')
             match = TableOperation.sfw(db, 'Borrower', ['*'], "bid = '%s'" % (bid))
-            print match
             today = date.today()
             if match:
-                ymd = [int(x) for x in match[0][7].split('-')]
-                expDate = datetime.date(ymd[0], ymd[1], ymd[2])
+                expDate = match[0][7]
                 if expDate < today:
                     error = "Error borrower account is expired"
                     return render_template('bidcheck.html', error=error,

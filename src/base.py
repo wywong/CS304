@@ -5,6 +5,9 @@ from jinja2 import TemplateNotFound
 import MySQLdb
 import TableOperation, dbConn
 
+from datetime import date
+import datetime
+
 base_page = Blueprint('base_page', __name__)
 
 # hard coded clerk and librarian accounts
@@ -34,6 +37,7 @@ def login():
         p = request.form['password'].encode('utf-8')
         cur = db.cursor()
         queryData = TableOperation.sfw(db, 'Borrower', ['*'], "bid = '%s'" % (u))
+        queryData = [[x if type(x) is not date else str(x) for x in y] for y in queryData]
         cur.close()
         if queryData:
             row = queryData[0]

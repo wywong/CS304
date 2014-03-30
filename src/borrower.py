@@ -72,3 +72,19 @@ def renewborrower():
 
     return render_template('renewborrower.html', error=error,
                      user=g.userInfo[0], accType=g.userInfo[8])
+
+@borrower_page.route('/myborrowed/')
+def myborrowed():
+    if not g.userInfo:
+        return redirect(url_for('base_page.index', user=None, accType=None))
+    if g.userInfo[8] not in ['student', 'faculty', 'staff']:
+        return redirect(url_for('base_page.index', user=g.userInfo[0], accType=g.userInfo[8]))
+    bid = g.userInfo[0]
+    fieldNames = TableOperation.getFieldNames(db, 'Borrowing')
+    rows = TableOperation.sfw(db, 'Borrowing', ['*'],
+            "bid = '%s' AND inDate = '%s'" % (bid, '0000-00-00'))
+    rows = [[x if type(x) is not date else str(x) for x in y] for y in rows]
+    rows.insert(0, fieldNames)
+    print rows
+    session['result'] = [rows]
+    return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8]))

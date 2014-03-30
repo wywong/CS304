@@ -40,7 +40,7 @@
 					<li><a href="#">View Overdue Items</a></li>
 					{% endif %}
 					{% if accType == 'borrower' %}
-					<li><a href="/myborrowed">View Checked Out Books</a></li>
+					<li><a href="#">View Checked Out Books</a></li>
 					{% endif %}
 				</ul>
 			</li>
@@ -78,7 +78,7 @@
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user }} Account Info<b class="caret"></b></a>
 					<ul class="dropdown-menu">
 
-						<li><a href="#">View Your Currently Checked Out Books</a></li>
+						<li><a href="/myborrowed">View Your Currently Checked Out Books</a></li>
 						<li><a href="#">View Current Fines</a></li>
 						<li><a href="#">Personal Info</a></li>
 					</ul>
