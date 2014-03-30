@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 {% block content %}
 {% for a_table in session.pop('catalogue', []) %}
-	<form action="{{ url_for('addtocart') }}" method=post>
+	<form action="{{ url_for('cart_page.addtocart') }}" method=post>
 		<dl>
     <table class = "table table-striper table-hover">
         {% if accType in ['student', 'faculty', 'staff'] %}
