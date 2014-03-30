@@ -5,6 +5,8 @@ from jinja2 import TemplateNotFound
 import MySQLdb
 import TableOperation, dbConn
 
+from datetime import date
+
 cart_page = Blueprint('cart_page', __name__)
 
 db = dbConn.dbConn()
@@ -24,7 +26,6 @@ def viewcart(bid=None):
         _bid = bid
     else:
         _bid = g.userInfo[0]
-    fieldNames = TableOperation.getFieldNames(db,'Book')
     rows = TableOperation.sfw(db, 'Book', ['*'],
             "callNumber IN (SELECT callNumber FROM Cart WHERE bid = '%s')" % (_bid))
     session['cart'] = [rows]
@@ -74,14 +75,49 @@ def cartaction(bid):
     if request.method == 'POST':
         cartOp = request.form['cartOperation'].encode('utf-8')
         session['selected'] = [x for x in request.form.keys() if x != 'cartOperation']
-        if cartOp == 'checkout':
-            return redirect(url_for('.viewcart', user=g.userInfo[0], accType=g.userInfo[8]))
+        if cartOp == 'checkout' and g.userInfo[8] in ['clerk']:
+            return redirect(url_for('.checkoutcart', user=g.userInfo[0],
+                accType=g.userInfo[8], bid=bid))
         elif cartOp == 'holdrequest':
             return redirect(url_for('.viewcart', user=g.userInfo[0], accType=g.userInfo[8]))
         elif cartOp == 'remove':
             return redirect(url_for('.removefromcart', user=g.userInfo[0],
                 accType=g.userInfo[8], bid=bid))
-    return render_template('base.result', user=g.userInfo[0], accType=g.userInfo[8])
+    return render_template('base_page.result', user=g.userInfo[0], accType=g.userInfo[8])
+
+@cart_page.route('/checkoutcart/<bid>', methods=['GET'])
+def checkoutcart(bid):
+    if not g.userInfo or bid == None:
+        return redirect(url_for('base_page.index', user=None))
+    selected = session['selected']
+    selectable = [session['bquery'][int(s)] for s in selected]
+
+    borrowable = [s for s in selectable if TableOperation.sfw(db, 'BookCopy', ['*'],
+                "status = 'in' AND callNumber = '%s'" %(s[0]))]
+    intersection = [x for x in borrowable if x in selectable]
+    copyTable = [TableOperation.getFieldNames(db, 'BookCopy')]
+    borTable = [TableOperation.getFieldNames(db, 'Borrowing')]
+    for r in intersection:
+        copy = TableOperation.sfw(db, 'BookCopy', ['callNumber', 'MIN(CopyNo)'],
+                "callNumber = '%s' AND status = 'in'" % (r[0]))
+        copyTable.append(TableOperation.sfw(db, 'BookCopy', ['*'],
+            "callNumber = '%s' AND copyNo = '%s'" %tuple(copy[0]))[0])
+        conds = "callNumber='%s' AND copyNo='%s'" % tuple(copy[0])
+        TableOperation.usw(db, 'BookCopy', "status='out'", conds)
+        borrowing = (bid.encode('utf-8'), copy[0][0], int(copy[0][1]),
+                date.today().isoformat(), 'NULL')
+        TableOperation.insertTuple(db,
+                'Borrowing (bid, callNumber, copyNo, outDate, inDate)',
+                borrowing)
+        borid = TableOperation.selectFrom(db, 'Borrowing', ['MAX(Borid)'])[0]
+        bor = borid + list(borrowing)
+        borTable.append(bor)
+        TableOperation.deleteTuple(db, 'Cart',
+                "bid = '%s' AND callNumber = '%s'" %(bid, r[0]))
+
+    session['result'] = [copyTable, borTable]
+    return redirect(url_for('base_page.result',
+        user=g.userInfo[0], accType=g.userInfo[8]))
 
 @cart_page.route('/removefromcart/<bid>', methods=['POST', 'GET'])
 def removefromcart(bid):
