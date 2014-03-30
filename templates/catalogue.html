@@ -1,32 +1,31 @@
 {% extends "index.html" %}
 {% block content %}
 {% for a_table in session.pop('catalogue', []) %}
+	<form action="{{ url_for('addtocart') }}" method=post>
+		<dl>
     <table class = "table table-striper table-hover">
+        {% if accType %}
+            <th>
+        {% endif %}
         <th>Call Number</th>
         <th>ISBN</th>
         <th>Title</th>
         <th>Author</th>
         <th>Publisher</th>
         <th>Year</th>
-        {% if accType %}
-            <th>
-            <th>
-            <th>
-        {% endif %}
         {% for row in a_table %}
         <tr>
-            {% for item in row %}
-                <td>{{ item }}</td>
-            {% endfor %}
-            {% if accType %}      
-                <td><button id ="check-out-{{ loop.index }}">Check out</button>
-                <td><button id ="hold-{{ loop.index }}">Place on Hold</button>
-                {% if accType in ['faculty','clerk','librarian'] %}            
-                <td><button id ="reserve-{{ loop.index }}">Reserve</button>
-                {% endif %}
-            {% endif %}
+					{% if accType in ['student', 'faculty', 'staff'] %}
+						<td><dd><input type="checkbox" name="{{loop.index-1}}"></td>
+					{% endif %}
+					{% for item in row %}
+						<td>{{ item }}</td>
+					{% endfor %}
         </tr>
         {% endfor %}
+		<dd><input type=submit value="Add to Cart">
     {% endfor %}
+		</dl>
+	</form>
 </table>
 {% endblock %}

@@ -166,9 +166,10 @@ def myborrowed():
 def catalogue():
     """ Displays search results, and allows users to check out books """
     fieldnames = TableOperation.getFieldNames(db,'Book')
-    rows = TableOperation.getColumns(db,'Book','*')
+    rows = TableOperation.getColumns(db, 'Book', ['*'])
     session['catalogue'] = [rows]
-    return render_template('catalogue.html')
+    session['catquery'] = rows
+    return render_template('catalogue.html', user=g.userInfo[0], accType=g.userInfo[8])
 
 @app.route('/viewcart')
 def viewcart():
@@ -180,6 +181,23 @@ def viewcart():
     rows.insert(0, fieldNames)
     session['result'] = [rows]
     return redirect(url_for('result', user=g.userInfo[0], accType=g.userInfo[8]))
+
+@app.route('/addtocart', methods=['POST', 'GET'])
+def addtocart():
+    error = None
+    if not g.userInfo:
+        return redirect(url_for('index', user=None))
+    if request.method == 'POST':
+        selected = request.form.keys()
+        selectable = session['catquery']
+
+        rows = [selectable[int(s)] for s in selected]
+        rows.insert(0, TableOperation.getFieldNames(db, 'Book'))
+        session['result'] = [rows]
+
+        return redirect(url_for('viewcart', user=g.userInfo[0], accType=g.userInfo[8]))
+
+    return redirect(url_for('viewcart', user=g.userInfo[0], accType=g.userInfo[8]))
 
 @app.route('/show')
 def show():
