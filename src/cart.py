@@ -6,6 +6,7 @@ import MySQLdb
 import TableOperation, dbConn
 
 from datetime import date
+import datetime
 
 cart_page = Blueprint('cart_page', __name__)
 
@@ -55,8 +56,18 @@ def bidcheck():
     if request.method == 'POST':
         if g.userInfo[8] in ['clerk']:
             bid = request.form['bid'].encode('utf-8')
-            if TableOperation.sfw(db, 'Borrower', ['*'], "bid = '%s'" % (bid)):
-                return redirect("viewcart/%s" %(bid))
+            match = TableOperation.sfw(db, 'Borrower', ['*'], "bid = '%s'" % (bid))
+            print match
+            today = date.today()
+            if match:
+                ymd = [int(x) for x in match[0][7].split('-')]
+                expDate = datetime.date(ymd[0], ymd[1], ymd[2])
+                if expDate < today:
+                    error = "Error borrower account is expired"
+                    return render_template('bidcheck.html', error=error,
+                                     user=g.userInfo[0], accType=g.userInfo[8])
+                else:
+                    return redirect("viewcart/%s" %(bid))
             else:
                 error = "Invalid bid"
                 return render_template('bidcheck.html', error=error,
