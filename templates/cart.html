@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 {% block content %}
 {% for a_table in session.pop('cart', []) %}
-	<form action="{{ url_for('cart_page.cartaction') }}" method=post>
+	<form action="/cartaction/{{ bid }}" method=post>
 		<dl>
     <table class = "table table-striper table-hover">
         <th>
