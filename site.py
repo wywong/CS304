@@ -101,6 +101,24 @@ def catalogue(searchtype=None,keyword=None):
     session['bquery'] = rows
     return render_template('catalogue.html', user=g.userInfo[0], accType=g.userInfo[8])
 
+@app.route('/reportcheckedout')
+@app.route('/reportcheckedout/<subject>')
+def reportcheckedout():
+       if searchtype and keyword:
+        _searchtype = searchtype
+        _keyword = keyword
+    else:
+        _searchtype = request.args.get( 'searchtype' )
+        _keyword = request.args.get( 'keyword' )
+    if _searchtype==None or _keyword==None:
+        _searchtype = ""
+        _keyword = ""
+    else:
+        _searchtype = _searchtype.encode('utf-8')
+        _keyword = _keyword.encode('utf-8')
+
+    return render_template('reportcheckedout.html', user=g.userInfo[0], accType=g.userInfo[8])
+
 @app.route('/show')
 def show():
     """ Displays the contents of table for debugging use """
