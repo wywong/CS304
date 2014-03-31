@@ -1,6 +1,7 @@
 {% extends "index.html" %}
 {% block content %}
 {% for a_table in session.pop('cart', []) %}
+{% if message %}<strong>Message:</strong> {{ message }}{% endif %}
 	<form action="/cartaction/{{ bid }}" method=post>
 		<dl>
     <table class = "table table-striper table-hover">

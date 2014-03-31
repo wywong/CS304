@@ -1,5 +1,6 @@
 {% extends "index.html" %}
 {% block content %}
+{% if message %}<strong>Message:</strong> {{ message }}{% endif %}
 {% for a_table in session.pop('borrowed', []) %}
 	<form action="{{ url_for('borrow_page.returnbook') }}" method=post>
 		<dl>

@@ -31,6 +31,7 @@ def login():
     if g.userInfo:
         return redirect(url_for('index', user=g.userInfo))
     error = None
+    session['message'] = ""
     if request.method == 'POST':
         u = request.form['username'].encode('utf-8')
         p = request.form['password'].encode('utf-8')
@@ -69,4 +70,4 @@ def logout():
 def result():
     """ Return the result of an insert """
     return render_template('result.html',
-            user=g.userInfo[0], accType=g.userInfo[8])
+            user=g.userInfo[0], accType=g.userInfo[8], message=session['message'])

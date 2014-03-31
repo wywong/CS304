@@ -1,6 +1,7 @@
 {% extends "index.html" %}
 {% block content %}
 <center>
+{% if message %}<strong>Message:</strong> {{ message }}{% endif %}
   {% for a_table in session.pop('result', []) %}
     <table class = "table table-striper table-hover">
     {% for row in a_table %}
