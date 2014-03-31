@@ -91,6 +91,7 @@ def selectFrom(table, cols):
 
     Post:   Returns the tables rows as a list of tuples
     """
+    conn = dbConn.dbConn()
     cur = conn.cursor()
     sql = "SELECT %s FROM %s" % (', '.join(cols), table)
     print sql

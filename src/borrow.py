@@ -103,10 +103,19 @@ def returnbook():
     if request.method == 'POST':
         selected = [session['bquery'][int(s)] for s in request.form.keys()]
         intersection = [x for x in session['bquery'] if x in selected]
+        copies = TableOperation.sfw("""Borrowing B INNER JOIN BookCopy C
+            ON B.callNumber=C.callNumber AND B.copyNo=C.copyNo""",
+            ['B.callNumber', 'B.copyNo'],
+            "bid='%s' AND inDate='0000-00-00'" % (session['bid']))
+        callNums = [x[2] for x in intersection]
+        copyUpdate = [x for x in copies if x[0] in callNums]
         for r in intersection:
             settings = "inDate = '%s'" % (date.today().isoformat())
             conds = "borid = '%s'" % (r[0])
             TableOperation.usw('Borrowing', settings, conds)
+            settings = "status ='in'"
+            conds = "callNumber = '%s' AND copyNo = '%s'" % tuple(copyUpdate.pop())
+            TableOperation.usw('BookCopy', settings, conds)
 
         return redirect(url_for('.borrowed', user=g.userInfo[0],
             accType=g.userInfo[8], bid=session.pop('bid')))

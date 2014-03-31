@@ -118,8 +118,7 @@ def checkoutcart(bid):
         TableOperation.usw('BookCopy', "status='out'", conds)
         borrowing = (bid.encode('utf-8'), copy[0][0], int(copy[0][1]),
                 date.today().isoformat(), 'NULL')
-        TableOperation.insertTuple(db,
-                'Borrowing (bid, callNumber, copyNo, outDate, inDate)',
+        TableOperation.insertTuple('Borrowing (bid, callNumber, copyNo, outDate, inDate)',
                 borrowing)
         borid = TableOperation.selectFrom('Borrowing', ['MAX(Borid)'])[0]
         bor = borid + list(borrowing)

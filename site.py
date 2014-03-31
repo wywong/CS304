@@ -88,7 +88,7 @@ def catalogue(searchtype=None,keyword=None):
     else:
         _searchtype = _searchtype.encode('utf-8')
         _keyword = _keyword.encode('utf-8')
-    fieldnames = TableOperation.getFieldNames(db,'Book')
+    fieldnames = TableOperation.getFieldNames('Book')
     if _searchtype == 'title':
         rows = TableOperation.sfw('Book', ['*'],"title LIKE '%%%s%%'" % _keyword)
     elif _searchtype == 'author':
