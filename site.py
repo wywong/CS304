@@ -84,10 +84,6 @@ def addbook():
     return render_template('addbook.html', error=error,
                             user=g.userInfo[0], accType=g.userInfo[8])
 
-@app.route('/myborrowed')
-def myborrowed():
-    return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8]))
-
 @app.route('/catalogue')
 @app.route('/catalogue/<searchtype>/<keyword>')
 def catalogue(searchtype=None,keyword=None):
