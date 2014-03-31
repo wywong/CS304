@@ -11,6 +11,7 @@ from src.base import base_page
 from src.cart import cart_page
 from src.borrow import borrow_page
 from src.catalogue import catalogue_page
+from src.reportcheckedout import report_checkedout_page
 
 app = Flask(__name__)
 app.secret_key = 'totally not safe'
@@ -18,6 +19,7 @@ app.register_blueprint(base_page)
 app.register_blueprint(cart_page)
 app.register_blueprint(borrow_page)
 app.register_blueprint(catalogue_page)
+app.register_blueprint(report_checkedout_page)
 
 @app.before_request
 def before_request():
@@ -84,24 +86,7 @@ def addbook():
                             user=g.userInfo[0], accType=g.userInfo[8])
 
 
-@app.route('/reportcheckedout')
-@app.route('/reportcheckedout/<subject>')
-def reportcheckedout():
-    if searchtype and keyword:
-        _searchtype = searchtype
-        _keyword = keyword
-    else:
-        _searchtype = request.args.get( 'searchtype' )
-        _keyword = request.args.get( 'keyword' )
-    if _searchtype==None or _keyword==None:
-        _searchtype = ""
-        _keyword = ""
-    else:
-        _searchtype = _searchtype.encode('utf-8')
-        _keyword = _keyword.encode('utf-8')
-    rows = TableOperation.sfw() 
-    
-    return render_template('reportcheckedout.html', user=g.userInfo[0], accType=g.userInfo[8])
+
 
 @app.route('/show')
 def show():

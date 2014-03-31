@@ -2,9 +2,9 @@
 {% block content %}
 	    <form class="form" role="search">
 	    <div class="form-group">
-		    <input type="text" class="form-control" placeholder="Enter a subject to filter by">
+		    <input type="text" class="form-control" name = "subject" placeholder="Enter a subject to filter by">
 	    </div>
-	    <button type="submit" class="btn btn-small"><a href='/report'>View</a></button>
+	    <button type="submit" class="btn btn-small"><a href='/reportcheckedout'>View</a></button>
          <table class = "table table-striper table-hover">
             <h1>Books Checked Out</h1>
             <th>Call Number</th>
@@ -18,9 +18,6 @@
             <th>Due Date</th>
                     {% for row in a_table %}
                         <tr>
-					    {% if accType in ['student', 'faculty', 'staff'] %}
-						    <td><dd><input type="checkbox" name="{{loop.index-1}}"></td>
-					    {% endif %}
 					    {% for item in row %}
 						    <td>{{ item }}</td>
 					    {% endfor %}
