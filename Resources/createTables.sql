@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS Borrowing (
 );
 
 CREATE TABLE IF NOT EXISTS Fine (
-  fid varchar(40) NOT NULL,
+  fid int NOT NULL AUTO_INCREMENT,
   amount int NOT NULL,
   issuedDate DATE NOT NULL,
   paidDate DATE NOT NULL,

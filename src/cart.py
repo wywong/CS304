@@ -38,7 +38,9 @@ def addtocart():
         return redirect(url_for('base_page.index', user=None))
     if request.method == 'POST':
         selected = request.form.keys()
+        print selected
         selectable = session['bquery']
+        print selectable
 
         rows = [selectable[int(s)] for s in selected]
         for r in rows:
@@ -123,7 +125,7 @@ def checkoutcart(bid):
         conds = "callNumber='%s' AND copyNo='%s'" % tuple(copy[0])
         TableOperation.usw('BookCopy', "status='out'", conds)
         borrowing = (bid.encode('utf-8'), copy[0][0], int(copy[0][1]),
-                date.today().isoformat(), 'NULL')
+                date.today().isoformat(), '0000-00-00')
         TableOperation.insertTuple('Borrowing (bid, callNumber, copyNo, outDate, inDate)',
                 borrowing)
         borid = TableOperation.selectFrom('Borrowing', ['MAX(Borid)'])[0]
@@ -133,8 +135,11 @@ def checkoutcart(bid):
                 "bid = '%s' AND callNumber = '%s'" %(bid, r[0]))
 
     difference = [x for x in selectable if x not in intersection]
-    message = "Checkedout: %s No available copies for: %s" % (str(intersection),
-            str(difference))
+    message = ""
+    if intersection:
+        message = message + "Checkedout: %s " % (str(intersection))
+    if difference:
+        message = message + "No available copies for: %s" % (str(difference))
     session['message'] = message
     session['result'] = [copyTable, borTable]
     return redirect(url_for('base_page.result',

@@ -110,15 +110,35 @@ def returnbook():
             "bid='%s' AND inDate='0000-00-00'" % (session['bid']))
         callNums = [x[2] for x in intersection]
         copyUpdate = [x for x in copies if x[0] in callNums]
-        copies = copyUpdate[:]
+        copyRows = copyUpdate[:]
+        if intersection:
+            bid = intersection[0][1]
+            timeLimit = TableOperation.sfw("""Borrower INNER JOIN BorrowerType
+                                    ON Borrower.type=BorrowerType.type""",
+                                    ['bookTimeLimit'],
+                                    "bid = '%s'" % (bid))[0][0] * 7
+        fines = []
         for r in intersection:
             settings = "inDate = '%s'" % (date.today().isoformat())
             conds = "borid = '%s'" % (r[0])
             TableOperation.usw('Borrowing', settings, conds)
             settings = "status ='in'"
             conds = "callNumber = '%s' AND copyNo = '%s'" % tuple(copyUpdate.pop())
+            ymd = r[4].split('-')
+            ymd = [int(x) for x in ymd]
+            dueDate = datetime.date(ymd[0], ymd[1], ymd[2]) + datetime.timedelta(timeLimit)
+            if  dueDate < date.today():
+                amount = 1
+                fine = (amount, date.today().isoformat(), '0000-00-00', r[0])
+                fines.append(fine)
+                TableOperation.insertTuple('Fine (amount, issuedDate, paidDate, borid)',
+                        fine)
             TableOperation.usw('BookCopy', settings, conds)
-        message = "Returned copies: %s" % (str(copies))
+        message=""
+        if copyRows:
+            message = message + "Returned copies: %s </br>" % (str(copies))
+        if fines:
+            message = message + "Fines Assessed: %s" % (str(fines))
         session['message'] = message
         return redirect(url_for('.borrowed', user=g.userInfo[0],
             accType=g.userInfo[8], bid=session.pop('bid')))
