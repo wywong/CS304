@@ -3,7 +3,7 @@ from flask import Flask, request, session, url_for, redirect, \
 from jinja2 import TemplateNotFound
 
 import MySQLdb
-import TableOperation, dbConn
+import TableOperation
 
 from datetime import date
 import datetime
@@ -17,7 +17,6 @@ accs = {
         'lib1':['lib1', '1234', 'wilson', None, None, None, None, None, 'librarian']
         }
 
-db = dbConn.dbConn()
 
 @base_page.route("/")
 def index():
@@ -35,10 +34,8 @@ def login():
     if request.method == 'POST':
         u = request.form['username'].encode('utf-8')
         p = request.form['password'].encode('utf-8')
-        cur = db.cursor()
-        queryData = TableOperation.sfw(db, 'Borrower', ['*'], "bid = '%s'" % (u))
+        queryData = TableOperation.sfw('Borrower', ['*'], "bid = '%s'" % (u))
         queryData = [[x if type(x) is not date else str(x) for x in y] for y in queryData]
-        cur.close()
         if queryData:
             row = queryData[0]
             user = row[0]

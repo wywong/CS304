@@ -3,14 +3,12 @@ from flask import Flask, request, session, url_for, redirect, \
 from jinja2 import TemplateNotFound
 
 import MySQLdb
-import TableOperation, dbConn
+import TableOperation
 
 from datetime import date
 import datetime
 
 cart_page = Blueprint('cart_page', __name__)
-
-db = dbConn.dbConn()
 
 # hard coded clerk and librarian accounts
 accs = {
@@ -27,7 +25,7 @@ def viewcart(bid=None):
         _bid = bid
     else:
         _bid = g.userInfo[0]
-    rows = TableOperation.sfw(db, 'Book', ['*'],
+    rows = TableOperation.sfw('Book', ['*'],
             "callNumber IN (SELECT callNumber FROM Cart WHERE bid = '%s')" % (_bid))
     session['cart'] = [rows]
     session['bquery'] = rows
@@ -43,7 +41,7 @@ def addtocart():
 
         rows = [selectable[int(s)] for s in selected]
         for r in rows:
-            TableOperation.insertTuple(db, 'Cart', (g.userInfo[0], r[0]))
+            TableOperation.insertTuple('Cart', (g.userInfo[0], r[0]))
 
     return redirect(url_for('.viewcart', user=g.userInfo[0], accType=g.userInfo[8]))
 
@@ -57,10 +55,11 @@ def bidcheck():
         if g.userInfo[8] in ['clerk']:
             bid = request.form['bid'].encode('utf-8')
             bAction = request.form['bAction'].encode('utf-8')
-            match = TableOperation.sfw(db, 'Borrower', ['*'], "bid = '%s'" % (bid))
+            match = TableOperation.sfw('Borrower', ['*'], "bid = '%s'" % (bid))
             today = date.today()
             if match:
                 expDate = match[0][7]
+                print expDate
                 if expDate < today:
                     error = "Error borrower account is expired"
                     return render_template('bidcheck.html', error=error,
@@ -105,27 +104,27 @@ def checkoutcart(bid):
     selected = session['selected']
     selectable = [session['bquery'][int(s)] for s in selected]
 
-    borrowable = [s for s in selectable if TableOperation.sfw(db, 'BookCopy', ['*'],
+    borrowable = [s for s in selectable if TableOperation.sfw('BookCopy', ['*'],
                 "status = 'in' AND callNumber = '%s'" %(s[0]))]
     intersection = [x for x in borrowable if x in selectable]
-    copyTable = [TableOperation.getFieldNames(db, 'BookCopy')]
-    borTable = [TableOperation.getFieldNames(db, 'Borrowing')]
+    copyTable = [TableOperation.getFieldNames('BookCopy')]
+    borTable = [TableOperation.getFieldNames('Borrowing')]
     for r in intersection:
-        copy = TableOperation.sfw(db, 'BookCopy', ['callNumber', 'MIN(CopyNo)'],
+        copy = TableOperation.sfw('BookCopy', ['callNumber', 'MIN(CopyNo)'],
                 "callNumber = '%s' AND status = 'in'" % (r[0]))
-        copyTable.append(TableOperation.sfw(db, 'BookCopy', ['*'],
+        copyTable.append(TableOperation.sfw('BookCopy', ['*'],
             "callNumber = '%s' AND copyNo = '%s'" %tuple(copy[0]))[0])
         conds = "callNumber='%s' AND copyNo='%s'" % tuple(copy[0])
-        TableOperation.usw(db, 'BookCopy', "status='out'", conds)
+        TableOperation.usw('BookCopy', "status='out'", conds)
         borrowing = (bid.encode('utf-8'), copy[0][0], int(copy[0][1]),
                 date.today().isoformat(), 'NULL')
         TableOperation.insertTuple(db,
                 'Borrowing (bid, callNumber, copyNo, outDate, inDate)',
                 borrowing)
-        borid = TableOperation.selectFrom(db, 'Borrowing', ['MAX(Borid)'])[0]
+        borid = TableOperation.selectFrom('Borrowing', ['MAX(Borid)'])[0]
         bor = borid + list(borrowing)
         borTable.append(bor)
-        TableOperation.deleteTuple(db, 'Cart',
+        TableOperation.deleteTuple('Cart',
                 "bid = '%s' AND callNumber = '%s'" %(bid, r[0]))
 
     session['result'] = [copyTable, borTable]
@@ -141,7 +140,7 @@ def removefromcart(bid):
 
     remove = [removable[int(s)] for s in selected]
     for r in remove:
-        TableOperation.deleteTuple(db, 'Cart',
+        TableOperation.deleteTuple('Cart',
                 "bid = '%s' AND callNumber = '%s'" %(bid, r[0]))
 
     return redirect(url_for('.viewcart', user=g.userInfo[0], accType=g.userInfo[8]))

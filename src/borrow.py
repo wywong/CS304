@@ -3,14 +3,12 @@ from flask import Flask, request, session, url_for, redirect, \
 from jinja2 import TemplateNotFound
 
 import MySQLdb
-import TableOperation, dbConn
+import TableOperation
 
 from datetime import date
 import datetime
 
 borrow_page = Blueprint('borrow_page', __name__)
-
-db = dbConn.dbConn()
 
 @borrow_page.route('/addborrower', methods=['POST', 'GET'])
 def addborrower():
@@ -30,13 +28,13 @@ def addborrower():
         expiryDate = request.form[ 'expiryDate' ].encode('utf-8')
         bType = request.form[ 'bType' ].encode('utf-8')
 
-        bid = TableOperation.selectFrom(db, 'Borrower', ['MAX(bid)'])[0][0]
+        bid = TableOperation.selectFrom('Borrower', ['MAX(bid)'])[0][0]
         bid = '%08d' % (int(bid) + 1)
         row = [ bid, passwd, bName, addr, phone, email, sNum, expiryDate, bType ]
 
-        borrowerFields = TableOperation.getFieldNames(db, 'Borrower')
+        borrowerFields = TableOperation.getFieldNames('Borrower')
         session['result'] = [[borrowerFields, row]]
-        TableOperation.insertTuple(db, 'Borrower', tuple(row))
+        TableOperation.insertTuple('Borrower', tuple(row))
         return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8]))
 
     return render_template('addborrower.html', error=error,
@@ -51,14 +49,14 @@ def renewborrower():
     if request.method == 'POST':
         if g.userInfo[8] in ['clerk']:
             bid = request.form['bid'].encode('utf-8')
-            match = TableOperation.sfw(db, 'Borrower', ['*'], "bid = '%s'" % (bid))
+            match = TableOperation.sfw('Borrower', ['*'], "bid = '%s'" % (bid))
             if match:
                 newDate = date.today() + datetime.timedelta(365)
                 s = "expiryDate = '%s'" % (newDate.isoformat())
                 conds = "bid = '%s'" % (bid)
-                TableOperation.usw(db, 'Borrower', s, conds)
-                rows = TableOperation.sfw(db, 'Borrower', ['*'], "bid = '%s'" % (bid))
-                borrowerFields = TableOperation.getFieldNames(db, 'Borrower')
+                TableOperation.usw('Borrower', s, conds)
+                rows = TableOperation.sfw('Borrower', ['*'], "bid = '%s'" % (bid))
+                borrowerFields = TableOperation.getFieldNames('Borrower')
                 rows.insert(0, borrowerFields)
                 session['result'] = [rows]
                 return render_template('result.html', error=error,
@@ -83,8 +81,8 @@ def borrowed(bid=None):
         return redirect(url_for('base_page.index', user=g.userInfo[0], accType=g.userInfo[8]))
     if not bid:
         bid = g.userInfo[0]
-    fieldNames = TableOperation.getFieldNames(db, 'Borrowing')
-    rows = TableOperation.sfw(db, 'Borrowing', ['*'],
+    fieldNames = TableOperation.getFieldNames('Borrowing')
+    rows = TableOperation.sfw('Borrowing', ['*'],
             "bid = '%s' AND inDate = '%s'" % (bid, '0000-00-00'))
     rows = [[x if type(x) is not date else str(x) for x in y] for y in rows]
     print rows
@@ -108,7 +106,7 @@ def returnbook():
         for r in intersection:
             settings = "inDate = '%s'" % (date.today().isoformat())
             conds = "borid = '%s'" % (r[0])
-            TableOperation.usw(db, 'Borrowing', settings, conds)
+            TableOperation.usw('Borrowing', settings, conds)
 
         return redirect(url_for('.borrowed', user=g.userInfo[0],
             accType=g.userInfo[8], bid=session.pop('bid')))

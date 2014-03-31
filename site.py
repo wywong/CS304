@@ -5,13 +5,11 @@ from flask import Flask, request, session, url_for, redirect, \
 
 from functools import wraps
 import MySQLdb
-from src import TableOperation, dbConn
+from src import TableOperation
 
 from src.base import base_page
 from src.cart import cart_page
 from src.borrow import borrow_page
-
-db = dbConn.dbConn()
 
 app = Flask(__name__)
 app.secret_key = 'totally not safe'
@@ -44,25 +42,25 @@ def addbook():
         row = (callNum, isbn, title, mainAuthor, publisher, year)
 
         # Check if book already exists
-        if TableOperation.sfw(db, 'Book', ['callNumber'],
+        if TableOperation.sfw('Book', ['callNumber'],
                                     "callNumber = '%s'" %(callNum)):
             # Insert new copy
-            bookCopyFields = TableOperation.getFieldNames(db, 'BookCopy')
+            bookCopyFields = TableOperation.getFieldNames('BookCopy')
 
-            numCopies = int(TableOperation.sfw(db, 'BookCopy', ['callNumber', 'MAX(copyNo)'],
+            numCopies = int(TableOperation.sfw('BookCopy', ['callNumber', 'MAX(copyNo)'],
                                 "callNumber = '%s'" % (callNum))[0][1]) + 1
             bCopy = (callNum, numCopies, 'in')
-            TableOperation.insertTuple(db, 'BookCopy', bCopy)
+            TableOperation.insertTuple('BookCopy', bCopy)
 
             session['result'] = [[bookCopyFields, bCopy]]
         else:
             # Insert new Book and the first book copy
-            bookFields = TableOperation.getFieldNames(db, 'Book')
-            TableOperation.insertTuple(db, 'Book', tuple(row))
+            bookFields = TableOperation.getFieldNames('Book')
+            TableOperation.insertTuple('Book', tuple(row))
 
-            bookCopyFields = TableOperation.getFieldNames(db, 'BookCopy')
+            bookCopyFields = TableOperation.getFieldNames('BookCopy')
             bCopy = (callNum, 1, 'in')
-            TableOperation.insertTuple(db, 'BookCopy', bCopy)
+            TableOperation.insertTuple('BookCopy', bCopy)
 
             session['result'] = [[bookFields, row], [bookCopyFields, bCopy]]
 
@@ -92,13 +90,13 @@ def catalogue(searchtype=None,keyword=None):
         _keyword = _keyword.encode('utf-8')
     fieldnames = TableOperation.getFieldNames(db,'Book')
     if _searchtype == 'title':
-        rows = TableOperation.sfw(db, 'Book', ['*'],"title LIKE '%%%s%%'" % _keyword)
+        rows = TableOperation.sfw('Book', ['*'],"title LIKE '%%%s%%'" % _keyword)
     elif _searchtype == 'author':
-        rows = TableOperation.sfw(db, 'Book', ['*'],"mainAuthor like '%%%s%%'" % _keyword)
+        rows = TableOperation.sfw('Book', ['*'],"mainAuthor like '%%%s%%'" % _keyword)
     elif _searchtype == 'subject':
-        rows = TableOperation.sfw(db, 'Book', ['*'],"subject like '%%%s%%'" % _keyword)
+        rows = TableOperation.sfw('Book', ['*'],"subject like '%%%s%%'" % _keyword)
     else:
-        rows = TableOperation.getColumns(db, 'Book', ['*'])
+        rows = TableOperation.getColumns('Book', ['*'])
     session['catalogue'] = [rows]
     session['bquery'] = rows
     return render_template('catalogue.html', user=g.userInfo[0], accType=g.userInfo[8])
@@ -107,8 +105,8 @@ def catalogue(searchtype=None,keyword=None):
 def show():
     """ Displays the contents of table for debugging use """
     table = request.args.get('table')
-    fieldNames = TableOperation.getFieldNames(db, table)
-    rows = TableOperation.showTable(db, table)
+    fieldNames = TableOperation.getFieldNames(table)
+    rows = TableOperation.showTable(table)
     rows.insert(0, fieldNames)
     session['result'] = [rows]
     return render_template('result.html')
