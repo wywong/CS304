@@ -80,13 +80,14 @@ def myborrowed():
 def catalogue(searchtype=None,keyword=None):
     _searchtype = searchtype
     _keyword = keyword
+    
     fieldnames = TableOperation.getFieldNames(db,'Book')
     if _searchtype == 'title':
-        rows = TableOperation.sfw(db, 'Book', ['*'],'bname like %%%s%%') % _keyword
+        rows = TableOperation.sfw(db, 'Book', ['*'],"title LIKE '%%%s%%'" % _keyword)
     elif _searchtype == 'author':
-        rows = TableOperation.sfw(db, 'Book', ['*'],'bname like %%%s%%') % _keyword
+        rows = TableOperation.sfw(db, 'Book', ['*'],"mainAuthor like '%%%s%%'" % _keyword)
     elif _searchtype == 'subject':
-        rows = TableOperation.sfw(db, 'Book', ['*'],'bname like %%%s%%') % _keyword
+        rows = TableOperation.sfw(db, 'Book', ['*'],"subject like '%%%s%%'" % _keyword)
     else:
         rows = TableOperation.getColumns(db, 'Book', ['*'])
     session['catalogue'] = [rows]
