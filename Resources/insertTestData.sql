@@ -26,6 +26,6 @@ INSERT INTO Book VALUES ('SW.1.102','1234567890002','Asian food for Lunches','Sh
 
 INSERT INTO BookCopy VALUES ('SW.1.102', 0, 'in');
 
-INSERT INTO Book VALUES ('WW.5.11','1234567890003','How to be a jinja ninja','Wilson Wong','Dynasty Pub', 950);
+INSERT INTO Book VALUES ('WW.5.11','1234567890003','How to be a jinja ninja','Wilson Wong','Dynasty Pub', 1980);
 
 INSERT INTO BookCopy VALUES ('WW.5.11', 0, 'in');
