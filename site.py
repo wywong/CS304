@@ -58,6 +58,21 @@ def addbook():
             bookFields = TableOperation.getFieldNames('Book')
             TableOperation.insertTuple('Book', tuple(row))
 
+            subject = request.form[ 'subject' ].encode('utf-8')
+            authors = request.form[ 'authors' ].encode('utf-8')
+            subFields = []
+            authFields = []
+
+            if subject:
+                subs = subject.split(',')
+                for s in subs:
+                    TableOperation.insertTuple('HasSubject', (callNum, s))
+
+            if authors:
+                auths = authors.split(',')
+                for a in auths:
+                    TableOperation.insertTuple('HasAuthor', (callNum, a))
+
             bookCopyFields = TableOperation.getFieldNames('BookCopy')
             bCopy = (callNum, 1, 'in')
             TableOperation.insertTuple('BookCopy', bCopy)
