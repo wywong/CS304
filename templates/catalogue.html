@@ -19,7 +19,11 @@
 						<td><dd><input type="checkbox" name="{{loop.index-1}}"></td>
 					{% endif %}
 					{% for item in row %}
+					    {% if item==author %}
+					        {{ item }}
+					    {% else %}
 						<td>{{ item }}</td>
+						{% endif %}
 					{% endfor %}
         </tr>
         {% endfor %}

@@ -88,13 +88,17 @@ def catalogue(searchtype=None,keyword=None):
     else:
         _searchtype = _searchtype.encode('utf-8')
         _keyword = _keyword.encode('utf-8')
-    fieldnames = TableOperation.getFieldNames(db,'Book')
+    fieldnames = TableOperation.getFieldNames('Book')
     if _searchtype == 'title':
         rows = TableOperation.sfw('Book', ['*'],"title LIKE '%%%s%%'" % _keyword)
     elif _searchtype == 'author':
-        rows = TableOperation.sfw('Book', ['*'],"mainAuthor like '%%%s%%'" % _keyword)
+        if(TableOperation.sfw("Book AS b INNER JOIN HasAuthor AS a ON (b.callNumber = a.callNumber)"
+        ,["b.callNumber"],"a.name LIKE '%%%s%%' or b.mainAuthor LIKE '%%%s%%'" % (_keyword,_keyword))):
+            rows = TableOperation.sfw("Book AS b INNER JOIN HasAuthor AS a ON (b.callNumber = a.callNumber)",["b.callNumber,b.isbn,b.title,b.mainAuthor,b.publisher,b.year"],"a.name LIKE '%%%s%%' or b.mainAuthor LIKE '%%%s%%'" % (_keyword,_keyword))
+        else:
+            rows = TableOperation.sfw("Book",["callNumber,isbn,title,mainAuthor,publisher,year"],"mainAuthor LIKE '%%%s%%'" % (_keyword))
     elif _searchtype == 'subject':
-        rows = TableOperation.sfw('Book', ['*'],"subject like '%%%s%%'" % _keyword)
+        rows = TableOperation.sfw("Book AS b INNER JOIN HasSubject AS a ON (b.callNumber = a.callNumber)",["*"],"a.subject LIKE '%%%s%%'" % (_keyword))
     else:
         rows = TableOperation.getColumns('Book', ['*'])
     session['catalogue'] = [rows]
