@@ -28,3 +28,32 @@ def viewfine(bid=None):
     session['fine'] = [rows]
     return render_template('fine.html', user=g.userInfo[0], accType=g.userInfo[8],
             bid=_bid, message=session['message'], fname=fieldNames)
+
+@fine_page.route('/fineaction/<bid>', methods=['POST', 'GET'])
+def fineaction(bid):
+    if not g.userInfo or bid == None:
+        return redirect(url_for('base_page.index', user=None))
+    if request.method == 'POST':
+        session['selected'] = [x for x in request.form.keys() if x != 'fineOperation']
+        return redirect(url_for('.payfine', user=g.userInfo[0],
+            accType=g.userInfo[8], bid=bid))
+    return render_template('base_page.result', user=g.userInfo[0], accType=g.userInfo[8])
+
+@fine_page.route('/payfine/<bid>', methods=['POST', 'GET'])
+def payfine(bid):
+    if not g.userInfo or bid == None:
+        return redirect(url_for('base_page.index', user=None))
+    selected = session['selected']
+    payable = session['bquery']
+
+    pay = [payable[int(s)] for s in selected]
+    for p in pay:
+        TableOperation.usw('Fine',
+                "paidDate = '%s'" %(date.today().isoformat()),
+                "fid = '%s'" %(p[0]))
+
+    message = "Fines paid: %s" % (str(pay))
+    session['message'] = message
+
+    return redirect(url_for('.viewfine', user=g.userInfo[0], accType=g.userInfo[8]))
+
