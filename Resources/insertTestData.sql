@@ -38,6 +38,8 @@ INSERT INTO Borrower VALUES ('00000015','1234','Johnny Depp','Library Road','250
 
 INSERT INTO Book VALUES ('EF.100.101','1234567890001','Learning Python','Evan Friday','Compsci Ltd.',2014);
 
+INSERT INTO HasAuthor VALUES ('EF.100.101','O.B. Sack, O.U.B.');
+
 INSERT INTO BookCopy VALUES ('EF.100.101', 0,'in');
 
 INSERT INTO BookCopy VALUES ('EF.100.101',1,'in');
@@ -48,11 +50,15 @@ INSERT INTO HasSubject VALUES ('EF.100.101','Tutorial');
 
 INSERT INTO Book VALUES ('SW.1.102','1234567890002','Asian food for Lunches','Shibo Weng','Moms Publishing Agency', 2013);
 
+INSERT INTO HasAuthor VALUES ('SW.1.102','O.B. Sack, O.U.B.');
+
 INSERT INTO BookCopy VALUES ('SW.1.102', 0, 'in');
 
 INSERT INTO HasSubject VALUES ('SW.1.102','Tutorial');
 
 INSERT INTO Book VALUES ('WW.5.11','1234567890003','How to be a jinja ninja','Wilson Wong','Dynasty Pub', 1980);
+
+INSERT INTO HasAuthor VALUES ('WW.5.11','O.B. Sack, O.U.B.');
 
 INSERT INTO BookCopy VALUES ('WW.5.11', 0, 'in');
 
@@ -60,17 +66,21 @@ INSERT INTO HasSubject VALUES ('WW.5.11','Tutorial');
 
 INSERT INTO Book VALUES ('SMW.25.321','145324635756462','How to get rid of squirrel','S.M. Weng','W.W. Enterprise', 1922);
 
+INSERT INTO HasAuthor VALUES ('SMW.25.321','O.B. Sack, O.U.B.');
+
 INSERT INTO BookCopy VALUES ('SMW.25.321', 0, 'in');
 
 INSERT INTO BookCopy VALUES ('SMW.25.321', 1, 'in');
 
 INSERT INTO BookCopy VALUES ('SMW.25.321', 2, 'in');
 
-INSERT INTO BookCopy VALUES ('SMW.25.321', 3, 'in');
+INSERT INTO BookCopy VALUES ('SMW.25.321', 3, 'in');0
 
 INSERT INTO HasSubject VALUES ('SMW.25.321','Tutorial');
 
 INSERT INTO Book VALUES ('CD.45.098','125062783959823','Demon Tale','Cory Dong','YOLO SWEG PUB', 1922);
+
+INSERT INTO HasAuthor VALUES ('CD.45.098','O.B. Sack, O.U.B.');
 
 INSERT INTO BookCopy VALUES ('CD.45.098', 0, 'in');
 
@@ -81,6 +91,8 @@ INSERT INTO Fine VALUES (100,'2012-01-31','0000-00-00',1);
 INSERT INTO HasSubject VALUES ('CD.45.098','Fiction, Horror, Suspence');
 
 INSERT INTO Book VALUES ('FG.235.331','34576654355678765','Greek Methology Analysis','Flora Gay','Standford Publishing', 1922);
+
+INSERT INTO HasAuthor VALUES ('FG.235.331','O.B. Sack');
 
 INSERT INTO BookCopy VALUES ('FG.235.331', 0, 'in');
 
@@ -98,7 +110,9 @@ INSERT INTO HoldRequest VALUES ('00000002', '00000008', 'FG.235.331', '2001-01-0
 
 INSERT INTO HasSubject VALUES ('FG.235.331','Non-Fiction, History, Scholar');
 
-INSERT INTO Book VALUES ('EH.825.321','954567876545677','Secret of the MIA','Evan Howard','Yub''s publishing', 1800);
+INSERT INTO Book VALUES ('EH.825.321','954567876545677','Secret of the MIA','Evan Howard','Yub''s publishing', 1982);
+
+INSERT INTO HasAuthor VALUES ('EH.825.321','O.U.B.');
 
 INSERT INTO BookCopy VALUES ('EH.825.321', 1, 'on hold');
 
@@ -120,6 +134,8 @@ INSERT INTO HasSubject VALUES ('EH.825.321','Non-Fiction, History, Suspence');
 
 INSERT INTO Book VALUES ('JKR.235.3781','457898765678','Wilson''s Master Plan','J.K.R.','KING PUB.', 1967);
 
+INSERT INTO HasAuthor VALUES ('JKR.235.3781','O.B. Sack, O.U.B.');
+
 INSERT INTO BookCopy VALUES ('JKR.235.3781', 1, 'in');
 
 INSERT INTO BookCopy VALUES ('JKR.235.3781', 0, 'on hold');
@@ -129,6 +145,8 @@ INSERT INTO HoldRequest VALUES ('00000005', '00000005', 'JKR.235.3781', '2001-01
 INSERT INTO HasSubject VALUES ('JKR.235.3781','Fiction, Humor, Suspence');
 
 INSERT INTO Book VALUES ('WG.58.351','985457876','Woman''s Backdoor','E. Gordan','P.E.R. Publishing', 1978);
+
+INSERT INTO HasAuthor VALUES ('WG.58.351','O.B. Sack, O.U.B.');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 1, 'out');
 
@@ -182,6 +200,8 @@ INSERT INTO HasSubject VALUES ('WG.58.351','Fiction, Adult, Humor');
 
 INSERT INTO Book VALUES ('DG.487.339','987654567876','History of Trolls','Dan Gin','Dongle Printing', 1948);
 
+INSERT INTO HasAuthor VALUES ('DG.487.339','O.B. Sack, O.U.B.');
+
 INSERT INTO BookCopy VALUES ('DG.487.339', 0, 'out');
 
 INSERT INTO Borrowing VALUES ('00000007','DG.487.339',0,'2012-01-17', '0000-00-00');
@@ -190,11 +210,15 @@ INSERT INTO HasSubject VALUES ('DG.487.339','Non-fiction, History, Humor, Schola
 
 INSERT INTO Book VALUES ('QE.85.361','954345678754345','The Shaking Car','Quennie Eng','Oklahoma Printing', 2013);
 
+INSERT INTO HasAuthor VALUES ('QE.85.361','O.B. Sack, O.U.B.');
+
 INSERT INTO BookCopy VALUES ('QE.85.361', 0, 'in');
 
 INSERT INTO HasSubject VALUES ('KK.45.391','Adult, Horror, Ficion');
 
-INSERT INTO Book VALUES ('KK.45.391','87654347876545','The Root of Fried Chicken','Ku Klutch','Peiking Publishing', 1599);
+INSERT INTO Book VALUES ('KK.45.391','87654347876545','The Root of Fried Chicken','Ku Klutch','Peiking Publishing', 1999);
+
+INSERT INTO HasAuthor VALUES ('KK.45.391','O.B. Sack, O.U.B.');
 
 INSERT INTO BookCopy VALUES ('KK.45.391', 0, 'on hold');
 
@@ -202,7 +226,9 @@ INSERT INTO HoldRequest VALUES ('00000013', '00000005', 'KK.45.391', '2001-01-09
 
 INSERT INTO HasSubject VALUES ('KK.45.391','Non-fiction, Food, History');
 
-INSERT INTO Book VALUES ('PP.33.324','8465456764564','Build a Putty World','Peter Putt','Evan''s Publishig', 1007);
+INSERT INTO Book VALUES ('PP.33.324','8465456764564','Build a Putty World','Peter Putt','Evan''s Publishig', 2011);
+
+INSERT INTO HasAuthor VALUES ('PP.33.324','O.B. Sack, O.U.B.');
 
 INSERT INTO BookCopy VALUES ('PP.33.324', 0, 'in');
 
