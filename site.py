@@ -10,12 +10,14 @@ from src import TableOperation
 from src.base import base_page
 from src.cart import cart_page
 from src.borrow import borrow_page
+from src.fine import fine_page
 
 app = Flask(__name__)
 app.secret_key = 'totally not safe'
 app.register_blueprint(base_page)
 app.register_blueprint(cart_page)
 app.register_blueprint(borrow_page)
+app.register_blueprint(fine_page)
 
 @app.before_request
 def before_request():
