@@ -78,9 +78,19 @@ def myborrowed():
 @app.route('/catalogue')
 @app.route('/catalogue/<searchtype>/<keyword>')
 def catalogue(searchtype=None,keyword=None):
-    _searchtype = searchtype
-    _keyword = keyword
-    
+    if searchtype and keyword:
+        _searchtype = searchtype
+        _keyword = keyword
+    else:
+        _searchtype = request.args.get( 'searchtype' )
+        _keyword = request.args.get( 'keyword' )
+    if _searchtype==None or _keyword==None:
+        _searchtype = ""
+        _keyword = ""
+    else:
+        _searchtype = _searchtype.encode('utf-8')
+        _keyword = _keyword.encode('utf-8')
+
     fieldnames = TableOperation.getFieldNames(db,'Book')
     if _searchtype == 'title':
         rows = TableOperation.sfw(db, 'Book', ['*'],"title LIKE '%%%s%%'" % _keyword)
