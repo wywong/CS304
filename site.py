@@ -119,7 +119,7 @@ def catalogue(searchtype=None,keyword=None):
 @app.route('/reportcheckedout')
 @app.route('/reportcheckedout/<subject>')
 def reportcheckedout():
-       if searchtype and keyword:
+    if searchtype and keyword:
         _searchtype = searchtype
         _keyword = keyword
     else:
@@ -131,7 +131,8 @@ def reportcheckedout():
     else:
         _searchtype = _searchtype.encode('utf-8')
         _keyword = _keyword.encode('utf-8')
-
+    rows = TableOperation.sfw() 
+    
     return render_template('reportcheckedout.html', user=g.userInfo[0], accType=g.userInfo[8])
 
 @app.route('/show')
