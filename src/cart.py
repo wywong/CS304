@@ -10,13 +10,6 @@ import datetime
 
 cart_page = Blueprint('cart_page', __name__)
 
-# hard coded clerk and librarian accounts
-accs = {
-        'clerk1':['clerk1', '1234', 'evan', None, None, None, None, None, 'clerk'],
-        'clerk2':['clerk2', '1234', 'shibo', None, None, None, None, None, 'clerk'],
-        'lib1':['lib1', '1234', 'wilson', None, None, None, None, None, 'librarian']
-        }
-
 @cart_page.route('/viewcart')
 @cart_page.route('/viewcart/<bid>')
 def viewcart(bid=None):
