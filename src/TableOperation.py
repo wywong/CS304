@@ -36,6 +36,24 @@ def deleteTuple(conn, table, conds):
     except:
         conn.rollback()
 
+def usw(conn, table, settings, conds):
+    """
+    Pre:    conn     - database connection
+            table    - table to be inserted into
+            settings - values to be set
+            conds    - conditions for rows to be updated
+
+    Post:   Deletes row(s) from table
+    """
+    sql = "UPDATE %s SET %s WHERE %s" % (table, settings, conds)
+    print sql + ';'
+    cur = conn.cursor()
+    try:
+        cur.execute(sql)
+        conn.commit()
+    except:
+        conn.rollback()
+
 def sfw(conn, table, cols, conds):
     """
     Pre:    conn     - database connection
@@ -47,6 +65,21 @@ def sfw(conn, table, cols, conds):
     """
     cur = conn.cursor()
     sql = "SELECT %s FROM %s WHERE %s" % (', '.join(cols), table, conds)
+    print sql
+    cur.execute(sql)
+    return [ list(l) for l in cur.fetchall() ]
+
+def selectFrom(conn, table, cols):
+    """
+    Pre:    conn     - database connection
+            table    - table to be inserted into
+            cols     - list of columns to be selected
+            conds    - conditions for rows to be selected
+
+    Post:   Returns the tables rows as a list of tuples
+    """
+    cur = conn.cursor()
+    sql = "SELECT %s FROM %s" % (', '.join(cols), table)
     print sql
     cur.execute(sql)
     return [ list(l) for l in cur.fetchall() ]

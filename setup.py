@@ -30,4 +30,5 @@ for cmd2 in insert:
         db.rollback()
     print(cmd2)
 
+
 db.close()

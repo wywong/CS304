@@ -59,12 +59,12 @@ CREATE TABLE IF NOT EXISTS HoldRequest (
 );
 
 CREATE TABLE IF NOT EXISTS Borrowing (
-  borid varchar(40) NOT NULL,
+  borid int NOT NULL AUTO_INCREMENT,
   bid char(8) NOT NULL,
   callNumber varchar(40) NOT NULL,
   copyNo int NOT NULL,
   outDate DATE NOT NULL,
-  inDate DATE NOT NULL,
+  inDate DATE NULL,
   PRIMARY KEY (borid)
 );
 
