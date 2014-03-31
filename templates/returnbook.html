@@ -1,0 +1,33 @@
+{% extends "index.html" %}
+{% block content %}
+{% for a_table in session.pop('borrowed', []) %}
+	<form action="{{ url_for('borrow_page.returnbook') }}" method=post>
+		<dl>
+    <table class = "table table-striper table-hover">
+        {% if accType in ['clerk'] %}
+            <th>
+        {% endif %}
+        <th>Call Number</th>
+        <th>ISBN</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Publisher</th>
+        <th>Year</th>
+        {% for row in a_table %}
+        <tr>
+					{% if accType in ['clerk'] %}
+						<td><dd><input type="checkbox" name="{{loop.index-1}}"></td>
+					{% endif %}
+					{% for item in row %}
+						<td>{{ item }}</td>
+					{% endfor %}
+        </tr>
+        {% endfor %}
+      {% if accType in ['clerk'] %}
+        <dd><input type=submit value="Return Selected">
+      {% endif %}
+    {% endfor %}
+		</dl>
+	</form>
+</table>
+{% endblock %}

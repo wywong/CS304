@@ -3,7 +3,10 @@ from flask import Flask, request, session, url_for, redirect, \
 from jinja2 import TemplateNotFound
 
 import MySQLdb
-import TableOperation, dbConn
+import TableOperation
+
+from datetime import date
+import datetime
 
 base_page = Blueprint('base_page', __name__)
 
@@ -14,7 +17,6 @@ accs = {
         'lib1':['lib1', '1234', 'wilson', None, None, None, None, None, 'librarian']
         }
 
-db = dbConn.dbConn()
 
 @base_page.route("/")
 def index():
@@ -32,9 +34,8 @@ def login():
     if request.method == 'POST':
         u = request.form['username'].encode('utf-8')
         p = request.form['password'].encode('utf-8')
-        cur = db.cursor()
-        queryData = TableOperation.sfw(db, 'Borrower', ['*'], "bid = '%s'" % (u))
-        cur.close()
+        queryData = TableOperation.sfw('Borrower', ['*'], "bid = '%s'" % (u))
+        queryData = [[x if type(x) is not date else str(x) for x in y] for y in queryData]
         if queryData:
             row = queryData[0]
             user = row[0]
@@ -69,33 +70,3 @@ def result():
     """ Return the result of an insert """
     return render_template('result.html',
             user=g.userInfo[0], accType=g.userInfo[8])
-
-@base_page.route('/addborrower', methods=['POST', 'GET'])
-def addborrower():
-    error = None
-    if not g.userInfo:
-        return redirect(url_for('.index', user=None, accType=None))
-    elif g.userInfo[8] != 'clerk':
-        return redirect(url_for('.index', user=g.userInfo[0], accType=g.userInfo[8]))
-
-    if request.method == 'POST':
-        bid = request.form[ 'bid' ].encode('utf-8')
-        passwd = request.form[ 'passwd' ].encode('utf-8')
-        bName = request.form[ 'name' ].encode('utf-8')
-        addr = request.form[ 'addr' ].encode('utf-8')
-        phone = request.form[ 'phone' ].encode('utf-8')
-        email = request.form[ 'email' ].encode('utf-8')
-        sNum = request.form[ 'sNum' ].encode('utf-8')
-        expiryDate = request.form[ 'expiryDate' ].encode('utf-8')
-        bType = request.form[ 'bType' ].encode('utf-8')
-
-        row = (bid, passwd, bName, addr, phone, email, sNum, expiryDate, bType)
-
-        borrowerFields = TableOperation.getFieldNames(db, 'Borrower')
-        session['result'] = [[borrowerFields, row]]
-        TableOperation.insertTuple(db, 'Borrower', tuple(row))
-        return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8]))
-
-    return render_template('addborrower.html', error=error,
-                            user=g.userInfo[0], accType=g.userInfo[8])
-

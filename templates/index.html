@@ -19,9 +19,15 @@
 
 		<ul class="nav navbar-nav">
 
-			<form class="navbar-form navbar-left" role="search">
+			<form action="{{ url_for('catalogue') }}" class="navbar-form navbar-left" role="search">
 				<div class="form-group">
-					<input type="text" class="form-control" placeholder="Search for a Book">
+					<dt>
+						<select name="searchtype">
+						<option value="title" selected>title</option>
+						<option value="author">author</option>
+						<option value="subject">subject</option>
+						</select>
+						<input type="text" name="keyword" class="form-control" placeholder="Search for a Book">
 				</div>
 				<button type="submit" class="btn btn-small">Go</button>
 			</form>
@@ -35,12 +41,12 @@
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Checked Out Books<b class="caret"></b></a>
 				<ul class = "dropdown-menu">
 					{% if accType == 'clerk' %}
-					<li><a href='/cartaction'>Checkout</a></li>
+					<li><a href='/bidcheck'>Checkout</a></li>
 					<li><a href="#">Process Book Return</a></li>
 					<li><a href="#">View Overdue Items</a></li>
 					{% endif %}
 					{% if accType == 'borrower' %}
-					<li><a href="/myborrowed">View Checked Out Books</a></li>
+					<li><a href="#">View Checked Out Books</a></li>
 					{% endif %}
 				</ul>
 			</li>
@@ -51,6 +57,7 @@
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Borrowers<b class="caret"></b></a>
 				<ul class = "dropdown-menu">
 					<li><a href="/addborrower">Add Borrower</a></li>
+					<li><a href="/renewborrower">Renew Borrower</a></li>
 				</ul>
 			</li>
 			{% endif %}
@@ -76,8 +83,8 @@
 				<li class="dropdown">
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user }} Account Info<b class="caret"></b></a>
 					<ul class="dropdown-menu">
-						
-						<li><a href="#">View Your Currently Checked Out Books</a></li>
+
+						<li><a href="/borrowed">View Your Currently Checked Out Books</a></li>
 						<li><a href="#">View Current Fines</a></li>
 						<li><a href="#">Personal Info</a></li>
 					</ul>

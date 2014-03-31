@@ -1,8 +1,8 @@
 #!/usr/bin/python
 
 import MySQLdb
-
-def insertTuple(conn, table, row):
+import dbConn
+def insertTuple(table, row):
     """
     Pre:    conn     - database connection
             table    - table to be inserted into
@@ -10,6 +10,7 @@ def insertTuple(conn, table, row):
 
     Post:   Inserts row into table
     """
+    conn = dbConn.dbConn()
     sql = "INSERT INTO %s VALUE %s" % (table, str(row))
     print sql + ';'
     cur = conn.cursor()
@@ -18,8 +19,10 @@ def insertTuple(conn, table, row):
         conn.commit()
     except:
         conn.rollback()
+    cur.close()
+    conn.close()
 
-def deleteTuple(conn, table, conds):
+def deleteTuple(table, conds):
     """
     Pre:    conn     - database connection
             table    - table to be inserted into
@@ -27,6 +30,7 @@ def deleteTuple(conn, table, conds):
 
     Post:   Deletes row(s) from table
     """
+    conn = dbConn.dbConn()
     sql = "DELETE FROM %s WHERE %s" % (table, str(conds))
     print sql + ';'
     cur = conn.cursor()
@@ -35,8 +39,31 @@ def deleteTuple(conn, table, conds):
         conn.commit()
     except:
         conn.rollback()
+    cur.close()
+    conn.close()
 
-def sfw(conn, table, cols, conds):
+def usw(table, settings, conds):
+    """
+    Pre:    conn     - database connection
+            table    - table to be inserted into
+            settings - values to be set
+            conds    - conditions for rows to be updated
+
+    Post:   Deletes row(s) from table
+    """
+    conn = dbConn.dbConn()
+    sql = "UPDATE %s SET %s WHERE %s" % (table, settings, conds)
+    print sql + ';'
+    cur = conn.cursor()
+    try:
+        cur.execute(sql)
+        conn.commit()
+    except:
+        conn.rollback()
+    cur.close()
+    conn.close()
+
+def sfw(table, cols, conds):
     """
     Pre:    conn     - database connection
             table    - table to be inserted into
@@ -45,40 +72,69 @@ def sfw(conn, table, cols, conds):
 
     Post:   Returns the tables rows as a list of tuples
     """
+    conn = dbConn.dbConn()
     cur = conn.cursor()
     sql = "SELECT %s FROM %s WHERE %s" % (', '.join(cols), table, conds)
     print sql
     cur.execute(sql)
-    return [ list(l) for l in cur.fetchall() ]
+    t = cur.fetchall()
+    cur.close()
+    conn.close()
+    return [ list(l) for l in t ]
 
-def showTable(conn, table):
+def selectFrom(table, cols):
+    """
+    Pre:    conn     - database connection
+            table    - table to be inserted into
+            cols     - list of columns to be selected
+            conds    - conditions for rows to be selected
+
+    Post:   Returns the tables rows as a list of tuples
+    """
+    conn = dbConn.dbConn()
+    cur = conn.cursor()
+    sql = "SELECT %s FROM %s" % (', '.join(cols), table)
+    print sql
+    cur.execute(sql)
+    t = cur.fetchall()
+    cur.close()
+    conn.close()
+    return [ list(l) for l in t ]
+
+def showTable(table):
     """
     Pre:    conn     - database connection
             table    - table to be inserted into
 
     Post:   Returns the tables rows as a list of tuples
     """
+    conn = dbConn.dbConn()
     cur = conn.cursor()
     sql = "SELECT * FROM %s" % (table)
     print sql + ';'
     cur.execute(sql)
     t = cur.fetchall()
+    cur.close()
+    conn.close()
     return [list(l) for l in t]
 
-def getFieldNames(conn, table):
+def getFieldNames(table):
     """
     Pre:    conn     - database connection
             table    - the table being queried
 
     Post:   Returns the field names of table
     """
+    conn = dbConn.dbConn()
     cur = conn.cursor()
     cur.execute("DESC %s" %(table))
     rows = cur.fetchall()
     names = [r[0] for r in rows]
+    cur.close()
+    conn.close()
     return names
 
-def getColumns(conn, table, cols):
+def getColumns(table, cols):
     """
     Pre:    conn     - database connection
             table    - the table being queried
@@ -86,7 +142,11 @@ def getColumns(conn, table, cols):
 
     Post:   Returns the columns of the fields selected
     """
+    conn = dbConn.dbConn()
     cur = conn.cursor()
     cur.execute("SELECT %s FROM %s" %(', '.join(cols), table))
-    return [list(l) for l in cur.fetchall()]
+    t = cur.fetchall()
+    cur.close()
+    conn.close()
+    return [list(l) for l in t ]
 

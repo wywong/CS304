@@ -4,19 +4,18 @@ from flask import Flask, request, session, url_for, redirect, \
      render_template, abort, g, flash
 
 from functools import wraps
-
 import MySQLdb
-from src import TableOperation, dbConn
+from src import TableOperation
 
 from src.base import base_page
 from src.cart import cart_page
-
-db = dbConn.dbConn()
+from src.borrow import borrow_page
 
 app = Flask(__name__)
 app.secret_key = 'totally not safe'
 app.register_blueprint(base_page)
 app.register_blueprint(cart_page)
+app.register_blueprint(borrow_page)
 
 @app.before_request
 def before_request():
@@ -43,25 +42,25 @@ def addbook():
         row = (callNum, isbn, title, mainAuthor, publisher, year)
 
         # Check if book already exists
-        if TableOperation.sfw(db, 'Book', ['callNumber'],
+        if TableOperation.sfw('Book', ['callNumber'],
                                     "callNumber = '%s'" %(callNum)):
             # Insert new copy
-            bookCopyFields = TableOperation.getFieldNames(db, 'BookCopy')
+            bookCopyFields = TableOperation.getFieldNames('BookCopy')
 
-            numCopies = int(TableOperation.sfw(db, 'BookCopy', ['callNumber', 'MAX(copyNo)'],
+            numCopies = int(TableOperation.sfw('BookCopy', ['callNumber', 'MAX(copyNo)'],
                                 "callNumber = '%s'" % (callNum))[0][1]) + 1
             bCopy = (callNum, numCopies, 'in')
-            TableOperation.insertTuple(db, 'BookCopy', bCopy)
+            TableOperation.insertTuple('BookCopy', bCopy)
 
             session['result'] = [[bookCopyFields, bCopy]]
         else:
             # Insert new Book and the first book copy
-            bookFields = TableOperation.getFieldNames(db, 'Book')
-            TableOperation.insertTuple(db, 'Book', tuple(row))
+            bookFields = TableOperation.getFieldNames('Book')
+            TableOperation.insertTuple('Book', tuple(row))
 
-            bookCopyFields = TableOperation.getFieldNames(db, 'BookCopy')
+            bookCopyFields = TableOperation.getFieldNames('BookCopy')
             bCopy = (callNum, 1, 'in')
-            TableOperation.insertTuple(db, 'BookCopy', bCopy)
+            TableOperation.insertTuple('BookCopy', bCopy)
 
             session['result'] = [[bookFields, row], [bookCopyFields, bCopy]]
 
@@ -75,10 +74,29 @@ def myborrowed():
     return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8]))
 
 @app.route('/catalogue')
-def catalogue():
-    """ Displays search results, and allows users to check out books """
-    fieldnames = TableOperation.getFieldNames(db,'Book')
-    rows = TableOperation.getColumns(db, 'Book', ['*'])
+@app.route('/catalogue/<searchtype>/<keyword>')
+def catalogue(searchtype=None,keyword=None):
+    if searchtype and keyword:
+        _searchtype = searchtype
+        _keyword = keyword
+    else:
+        _searchtype = request.args.get( 'searchtype' )
+        _keyword = request.args.get( 'keyword' )
+    if _searchtype==None or _keyword==None:
+        _searchtype = ""
+        _keyword = ""
+    else:
+        _searchtype = _searchtype.encode('utf-8')
+        _keyword = _keyword.encode('utf-8')
+    fieldnames = TableOperation.getFieldNames('Book')
+    if _searchtype == 'title':
+        rows = TableOperation.sfw('Book', ['*'],"title LIKE '%%%s%%'" % _keyword)
+    elif _searchtype == 'author':
+        rows = TableOperation.sfw('Book', ['*'],"mainAuthor like '%%%s%%'" % _keyword)
+    elif _searchtype == 'subject':
+        rows = TableOperation.sfw('Book', ['*'],"subject like '%%%s%%'" % _keyword)
+    else:
+        rows = TableOperation.getColumns('Book', ['*'])
     session['catalogue'] = [rows]
     session['bquery'] = rows
     return render_template('catalogue.html', user=g.userInfo[0], accType=g.userInfo[8])
@@ -87,8 +105,8 @@ def catalogue():
 def show():
     """ Displays the contents of table for debugging use """
     table = request.args.get('table')
-    fieldNames = TableOperation.getFieldNames(db, table)
-    rows = TableOperation.showTable(db, table)
+    fieldNames = TableOperation.getFieldNames(table)
+    rows = TableOperation.showTable(table)
     rows.insert(0, fieldNames)
     session['result'] = [rows]
     return render_template('result.html')

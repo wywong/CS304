@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS Borrower (
   address varchar(40),
   phone char(10),
   emailAddress varchar(40) NOT NULL,
-  sinOrStNo varchar(9) NOT NULL,
-  expiryDate varchar(10),
+  sinOrStNo varchar(9) NOT NULL UNIQUE,
+  expiryDate DATE NOT NULL,
   type varchar(7),
   PRIMARY KEY (bid),
   FOREIGN KEY (type) REFERENCES BorrowerType(type)
@@ -59,12 +59,12 @@ CREATE TABLE IF NOT EXISTS HoldRequest (
 );
 
 CREATE TABLE IF NOT EXISTS Borrowing (
-  borid varchar(40) NOT NULL,
+  borid int NOT NULL AUTO_INCREMENT,
   bid char(8) NOT NULL,
   callNumber varchar(40) NOT NULL,
   copyNo int NOT NULL,
   outDate DATE NOT NULL,
-  inDate DATE NOT NULL,
+  inDate DATE NULL,
   PRIMARY KEY (borid)
 );
 

@@ -16,12 +16,19 @@ sqlCmds = [cmd for cmd in sqlCmds if cmd.strip()]
 
 for cmd in sqlCmds:
     cur.execute(cmd)
+    print(cmd)
 
-TableOperation.insertTuple(db, 'BorrowerType', ('student', 2))
-TableOperation.insertTuple(db, 'BorrowerType', ('faculty', 12))
-TableOperation.insertTuple(db, 'BorrowerType', ('staff', 6))
+filept = open('Resources/insertTestData.sql')
+insertFile = filept.read()
+insert = insertFile.split(';')
+insert = [cmd2 for cmd2 in insert if cmd2.strip()]
+for cmd2 in insert:
+    try:
+        cur.execute(cmd2)
+        db.commit()
+    except:
+        db.rollback()
+    print(cmd2)
 
-libinsert=("insert into Borrower(bid,password,name,emailAddress,sinOrStNo,type) VALUES ('1','12345','Librarian','library@ubc.ca','123456789','staff')")
-cur.execute(libinsert)
 
 db.close()
