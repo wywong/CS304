@@ -58,6 +58,21 @@ def addbook():
             bookFields = TableOperation.getFieldNames('Book')
             TableOperation.insertTuple('Book', tuple(row))
 
+            subject = request.form[ 'subject' ].encode('utf-8')
+            authors = request.form[ 'authors' ].encode('utf-8')
+            subFields = []
+            authFields = []
+
+            if subject:
+                subs = subject.split(',')
+                for s in subs:
+                    TableOperation.insertTuple('HasSubject', (callNum, s))
+
+            if authors:
+                auths = authors.split(',')
+                for a in auths:
+                    TableOperation.insertTuple('HasAuthor', (callNum, a))
+
             bookCopyFields = TableOperation.getFieldNames('BookCopy')
             bCopy = (callNum, 1, 'in')
             TableOperation.insertTuple('BookCopy', bCopy)
@@ -68,10 +83,6 @@ def addbook():
 
     return render_template('addbook.html', error=error,
                             user=g.userInfo[0], accType=g.userInfo[8])
-
-@app.route('/myborrowed')
-def myborrowed():
-    return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8]))
 
 @app.route('/catalogue')
 @app.route('/catalogue/<searchtype>/<keyword>')
@@ -92,9 +103,13 @@ def catalogue(searchtype=None,keyword=None):
     if _searchtype == 'title':
         rows = TableOperation.sfw('Book', ['*'],"title LIKE '%%%s%%'" % _keyword)
     elif _searchtype == 'author':
-        rows = TableOperation.sfw('Book', ['*'],"mainAuthor like '%%%s%%'" % _keyword)
+        if(TableOperation.sfw("Book AS b INNER JOIN HasAuthor AS a ON (b.callNumber = a.callNumber)"
+        ,["b.callNumber"],"a.name LIKE '%%%s%%' or b.mainAuthor LIKE '%%%s%%'" % (_keyword,_keyword))):
+            rows = TableOperation.sfw("Book AS b INNER JOIN HasAuthor AS a ON (b.callNumber = a.callNumber)",["b.callNumber,b.isbn,b.title,b.mainAuthor,b.publisher,b.year"],"a.name LIKE '%%%s%%' or b.mainAuthor LIKE '%%%s%%'" % (_keyword,_keyword))
+        else:
+            rows = TableOperation.sfw("Book",["callNumber,isbn,title,mainAuthor,publisher,year"],"mainAuthor LIKE '%%%s%%'" % (_keyword))
     elif _searchtype == 'subject':
-        rows = TableOperation.sfw('Book', ['*'],"subject like '%%%s%%'" % _keyword)
+        rows = TableOperation.sfw("Book AS b INNER JOIN HasSubject AS a ON (b.callNumber = a.callNumber)",["*"],"a.subject LIKE '%%%s%%'" % (_keyword))
     else:
         rows = TableOperation.getColumns('Book', ['*'])
     session['catalogue'] = [rows]

@@ -59,7 +59,7 @@ def renewborrower():
                 borrowerFields = TableOperation.getFieldNames('Borrower')
                 rows.insert(0, borrowerFields)
                 session['result'] = [rows]
-                return render_template('result.html', error=error,
+                return render_template('result.html', error=error, message="Renewed",
                                  user=g.userInfo[0], accType=g.userInfo[8])
             else:
                 error = "Invalid bid"
@@ -90,7 +90,8 @@ def borrowed(bid=None):
         session['borrowed'] = [rows]
         session['bquery'] = rows
         session['bid'] = bid
-        return render_template('returnbook.html', user=g.userInfo[0], accType=g.userInfo[8])
+        return render_template('returnbook.html', user=g.userInfo[0], accType=g.userInfo[8],
+                message=session['message'])
     else:
         rows.insert(0, fieldNames)
         session['result'] = [rows]
@@ -109,6 +110,7 @@ def returnbook():
             "bid='%s' AND inDate='0000-00-00'" % (session['bid']))
         callNums = [x[2] for x in intersection]
         copyUpdate = [x for x in copies if x[0] in callNums]
+        copies = copyUpdate[:]
         for r in intersection:
             settings = "inDate = '%s'" % (date.today().isoformat())
             conds = "borid = '%s'" % (r[0])
@@ -116,7 +118,8 @@ def returnbook():
             settings = "status ='in'"
             conds = "callNumber = '%s' AND copyNo = '%s'" % tuple(copyUpdate.pop())
             TableOperation.usw('BookCopy', settings, conds)
-
+        message = "Returned copies: %s" % (str(copies))
+        session['message'] = message
         return redirect(url_for('.borrowed', user=g.userInfo[0],
             accType=g.userInfo[8], bid=session.pop('bid')))
     return render_template('.borrow_page', user=g.userInfo[0], accType=g.userInfo[8])

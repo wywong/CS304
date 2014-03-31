@@ -29,7 +29,8 @@ def viewcart(bid=None):
             "callNumber IN (SELECT callNumber FROM Cart WHERE bid = '%s')" % (_bid))
     session['cart'] = [rows]
     session['bquery'] = rows
-    return render_template('cart.html', user=g.userInfo[0], accType=g.userInfo[8], bid=_bid)
+    return render_template('cart.html', user=g.userInfo[0], accType=g.userInfo[8],
+            bid=_bid, message=session['message'])
 
 @cart_page.route('/addtocart', methods=['POST', 'GET'])
 def addtocart():
@@ -42,6 +43,9 @@ def addtocart():
         rows = [selectable[int(s)] for s in selected]
         for r in rows:
             TableOperation.insertTuple('Cart', (g.userInfo[0], r[0]))
+
+        message = "Added to cart: %s" % (rows)
+        session['message'] = message
 
     return redirect(url_for('.viewcart', user=g.userInfo[0], accType=g.userInfo[8]))
 
@@ -66,8 +70,10 @@ def bidcheck():
                                      user=g.userInfo[0], accType=g.userInfo[8])
                 else:
                     if bAction == 'cart':
+                        session['message'] = ""
                         return redirect("viewcart/%s" %(bid))
                     else:
+                        session['message'] = ""
                         return redirect("borrowed/%s" %(bid))
             else:
                 error = "Invalid bid"
@@ -126,6 +132,10 @@ def checkoutcart(bid):
         TableOperation.deleteTuple('Cart',
                 "bid = '%s' AND callNumber = '%s'" %(bid, r[0]))
 
+    difference = [x for x in selectable if x not in intersection]
+    message = "Checkedout: %s No available copies for: %s" % (str(intersection),
+            str(difference))
+    session['message'] = message
     session['result'] = [copyTable, borTable]
     return redirect(url_for('base_page.result',
         user=g.userInfo[0], accType=g.userInfo[8]))
@@ -141,6 +151,9 @@ def removefromcart(bid):
     for r in remove:
         TableOperation.deleteTuple('Cart',
                 "bid = '%s' AND callNumber = '%s'" %(bid, r[0]))
+
+    message = "Books removed from cart:: %s" % (str(remove))
+    session['message'] = message
 
     return redirect(url_for('.viewcart', user=g.userInfo[0], accType=g.userInfo[8]))
 
