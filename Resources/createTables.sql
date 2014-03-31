@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Borrower (
   phone char(10),
   emailAddress varchar(40) NOT NULL,
   sinOrStNo varchar(9) NOT NULL UNIQUE,
-  expiryDate varchar(10),
+  expiryDate DATE,
   type varchar(7),
   PRIMARY KEY (bid),
   FOREIGN KEY (type) REFERENCES BorrowerType(type)
