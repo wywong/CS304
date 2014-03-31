@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS HasSubject (
 );
 
 CREATE TABLE IF NOT EXISTS BookCopy (
-  callNumber varchar(40) NOT NULL,Softwarename
+  callNumber varchar(40) NOT NULL,
   copyNo int NOT NULL,
   status varchar(7) NOT NULL,
   PRIMARY KEY (copyNo, callNumber),
