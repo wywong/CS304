@@ -19,6 +19,7 @@ def insertTuple(table, row):
         conn.commit()
     except:
         conn.rollback()
+        print("Query Failed: " + sql)
     cur.close()
     conn.close()
 
@@ -39,6 +40,7 @@ def deleteTuple(table, conds):
         conn.commit()
     except:
         conn.rollback()
+        print("Query Failed: " + sql)
     cur.close()
     conn.close()
 
@@ -60,6 +62,7 @@ def usw(table, settings, conds):
         conn.commit()
     except:
         conn.rollback()
+        print("Query Failed: " + sql)
     cur.close()
     conn.close()
 
