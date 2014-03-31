@@ -96,7 +96,7 @@ def catalogue(searchtype=None,keyword=None):
     session['catalogue'] = [rows]
     session['bquery'] = rows
     return render_template('catalogue.html', user=g.userInfo[0], accType=g.userInfo[8])
-    
+
 @app.route('/show')
 def show():
     """ Displays the contents of table for debugging use """
