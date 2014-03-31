@@ -8,11 +8,11 @@ import TableOperation, dbConn
 from datetime import date
 import datetime
 
-borrower_page = Blueprint('borrower_page', __name__)
+borrow_page = Blueprint('borrow_page', __name__)
 
 db = dbConn.dbConn()
 
-@borrower_page.route('/addborrower', methods=['POST', 'GET'])
+@borrow_page.route('/addborrower', methods=['POST', 'GET'])
 def addborrower():
     error = None
     if not g.userInfo:
@@ -41,7 +41,7 @@ def addborrower():
     return render_template('addborrower.html', error=error,
                             user=g.userInfo[0], accType=g.userInfo[8])
 
-@borrower_page.route('/renewborrower', methods=['POST', 'GET'])
+@borrow_page.route('/renewborrower', methods=['POST', 'GET'])
 def renewborrower():
     """ Get bid to determine which cart to display """
     if not g.userInfo:
@@ -73,18 +73,42 @@ def renewborrower():
     return render_template('renewborrower.html', error=error,
                      user=g.userInfo[0], accType=g.userInfo[8])
 
-@borrower_page.route('/myborrowed/')
-def myborrowed():
+@borrow_page.route('/borrowed')
+@borrow_page.route('/borrowed/<bid>')
+def borrowed(bid=None):
     if not g.userInfo:
         return redirect(url_for('base_page.index', user=None, accType=None))
-    if g.userInfo[8] not in ['student', 'faculty', 'staff']:
+    if g.userInfo[8] not in ['student', 'faculty', 'staff', 'clerk']:
         return redirect(url_for('base_page.index', user=g.userInfo[0], accType=g.userInfo[8]))
-    bid = g.userInfo[0]
+    if not bid:
+        bid = g.userInfo[0]
     fieldNames = TableOperation.getFieldNames(db, 'Borrowing')
     rows = TableOperation.sfw(db, 'Borrowing', ['*'],
             "bid = '%s' AND inDate = '%s'" % (bid, '0000-00-00'))
     rows = [[x if type(x) is not date else str(x) for x in y] for y in rows]
-    rows.insert(0, fieldNames)
     print rows
-    session['result'] = [rows]
-    return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8]))
+    if g.userInfo[8] in ['clerk']:
+        session['borrowed'] = [rows]
+        session['bquery'] = rows
+        session['bid'] = bid
+        return render_template('returnbook.html', user=g.userInfo[0], accType=g.userInfo[8])
+    else:
+        rows.insert(0, fieldNames)
+        session['result'] = [rows]
+        return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8]))
+
+@borrow_page.route('/returnbook', methods=['POST', 'GET'])
+def returnbook():
+    if not g.userInfo:
+        return redirect(url_for('base_page.index', user=None))
+    if request.method == 'POST':
+        selected = [session['bquery'][int(s)] for s in request.form.keys()]
+        intersection = [x for x in session['bquery'] if x in selected]
+        for r in intersection:
+            settings = "inDate = '%s'" % (date.today().isoformat())
+            conds = "borid = '%s'" % (r[0])
+            TableOperation.usw(db, 'Borrowing', settings, conds)
+
+        return redirect(url_for('.borrowed', user=g.userInfo[0],
+            accType=g.userInfo[8], bid=session.pop('bid')))
+    return render_template('.borrow_page', user=g.userInfo[0], accType=g.userInfo[8])

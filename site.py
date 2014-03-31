@@ -10,7 +10,7 @@ from src import TableOperation, dbConn
 
 from src.base import base_page
 from src.cart import cart_page
-from src.borrower import borrower_page
+from src.borrow import borrow_page
 
 db = dbConn.dbConn()
 
@@ -18,7 +18,7 @@ app = Flask(__name__)
 app.secret_key = 'totally not safe'
 app.register_blueprint(base_page)
 app.register_blueprint(cart_page)
-app.register_blueprint(borrower_page)
+app.register_blueprint(borrow_page)
 
 @app.before_request
 def before_request():

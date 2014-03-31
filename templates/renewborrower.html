@@ -3,7 +3,7 @@
 <center>
 <h2>Borrower Renew</h2>
 {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-<form action="{{ url_for('borrower_page.renewborrower') }}" method=post>
+<form action="{{ url_for('borrow_page.renewborrower') }}" method=post>
 	<dl>
 		<dt>bid:
 		<dd><input type=text name=bid>

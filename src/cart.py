@@ -56,6 +56,7 @@ def bidcheck():
     if request.method == 'POST':
         if g.userInfo[8] in ['clerk']:
             bid = request.form['bid'].encode('utf-8')
+            bAction = request.form['bAction'].encode('utf-8')
             match = TableOperation.sfw(db, 'Borrower', ['*'], "bid = '%s'" % (bid))
             today = date.today()
             if match:
@@ -65,7 +66,10 @@ def bidcheck():
                     return render_template('bidcheck.html', error=error,
                                      user=g.userInfo[0], accType=g.userInfo[8])
                 else:
-                    return redirect("viewcart/%s" %(bid))
+                    if bAction == 'cart':
+                        return redirect("viewcart/%s" %(bid))
+                    else:
+                        return redirect("borrowed/%s" %(bid))
             else:
                 error = "Invalid bid"
                 return render_template('bidcheck.html', error=error,
