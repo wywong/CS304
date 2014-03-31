@@ -19,9 +19,15 @@
 
 		<ul class="nav navbar-nav">
 
-			<form class="navbar-form navbar-left" role="search">
+			<form action="{{ url_for('catalogue') }}" class="navbar-form navbar-left" role="search">
 				<div class="form-group">
-					<input type="text" class="form-control" placeholder="Search for a Book">
+					<dt>
+						<select name="searchtype">
+						<option value="title" selected>title</option>
+						<option value="author">author</option>
+						<option value="subject">subject</option>
+						</select>
+						<input type="text" name="keyword" class="form-control" placeholder="Search for a Book">
 				</div>
 				<button type="submit" class="btn btn-small">Go</button>
 			</form>

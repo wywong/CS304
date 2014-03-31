@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS Borrower (
   address varchar(40),
   phone char(10),
   emailAddress varchar(40) NOT NULL,
-  sinOrStNo varchar(9) NOT NULL,
-  expiryDate Date NOT NULL,
+  sinOrStNo varchar(9) NOT NULL UNIQUE,
+  expiryDate varchar(10),
   type varchar(7),
   PRIMARY KEY (bid),
   FOREIGN KEY (type) REFERENCES BorrowerType(type)

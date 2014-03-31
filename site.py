@@ -4,7 +4,6 @@ from flask import Flask, request, session, url_for, redirect, \
      render_template, abort, g, flash
 
 from functools import wraps
-
 import MySQLdb
 from src import TableOperation, dbConn
 
@@ -72,11 +71,34 @@ def addbook():
     return render_template('addbook.html', error=error,
                             user=g.userInfo[0], accType=g.userInfo[8])
 
+@app.route('/myborrowed')
+def myborrowed():
+    return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8]))
+
 @app.route('/catalogue')
-def catalogue():
-    """ Displays search results, and allows users to check out books """
+@app.route('/catalogue/<searchtype>/<keyword>')
+def catalogue(searchtype=None,keyword=None):
+    if searchtype and keyword:
+        _searchtype = searchtype
+        _keyword = keyword
+    else:
+        _searchtype = request.args.get( 'searchtype' )
+        _keyword = request.args.get( 'keyword' )
+    if _searchtype==None or _keyword==None:
+        _searchtype = ""
+        _keyword = ""
+    else:
+        _searchtype = _searchtype.encode('utf-8')
+        _keyword = _keyword.encode('utf-8')
     fieldnames = TableOperation.getFieldNames(db,'Book')
-    rows = TableOperation.getColumns(db, 'Book', ['*'])
+    if _searchtype == 'title':
+        rows = TableOperation.sfw(db, 'Book', ['*'],"title LIKE '%%%s%%'" % _keyword)
+    elif _searchtype == 'author':
+        rows = TableOperation.sfw(db, 'Book', ['*'],"mainAuthor like '%%%s%%'" % _keyword)
+    elif _searchtype == 'subject':
+        rows = TableOperation.sfw(db, 'Book', ['*'],"subject like '%%%s%%'" % _keyword)
+    else:
+        rows = TableOperation.getColumns(db, 'Book', ['*'])
     session['catalogue'] = [rows]
     session['bquery'] = rows
     return render_template('catalogue.html', user=g.userInfo[0], accType=g.userInfo[8])

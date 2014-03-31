@@ -21,7 +21,6 @@ def addborrower():
         return redirect(url_for('.index', user=g.userInfo[0], accType=g.userInfo[8]))
 
     if request.method == 'POST':
-        bid = request.form[ 'bid' ].encode('utf-8')
         passwd = request.form[ 'passwd' ].encode('utf-8')
         bName = request.form[ 'name' ].encode('utf-8')
         addr = request.form[ 'addr' ].encode('utf-8')
@@ -31,7 +30,9 @@ def addborrower():
         expiryDate = request.form[ 'expiryDate' ].encode('utf-8')
         bType = request.form[ 'bType' ].encode('utf-8')
 
-        row = (bid, passwd, bName, addr, phone, email, sNum, expiryDate, bType)
+        bid = TableOperation.selectFrom(db, 'Borrower', ['MAX(bid)'])[0][0]
+        bid = '%08d' % (int(bid) + 1)
+        row = [ bid, passwd, bName, addr, phone, email, sNum, expiryDate, bType ]
 
         borrowerFields = TableOperation.getFieldNames(db, 'Borrower')
         session['result'] = [[borrowerFields, row]]
