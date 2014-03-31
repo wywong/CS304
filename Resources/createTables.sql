@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS Borrower (
   address varchar(40),
   phone char(10),
   emailAddress varchar(40) NOT NULL,
-  sinOrStNo varchar(9) NOT NULL,
+  sinOrStNo varchar(9) NOT NULL UNIQUE,
   expiryDate varchar(10),
   type varchar(7),
   PRIMARY KEY (bid),
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS HasSubject (
 );
 
 CREATE TABLE IF NOT EXISTS BookCopy (
-  callNumber varchar(40) NOT NULL,
+  callNumber varchar(40) NOT NULL,Softwarename
   copyNo int NOT NULL,
   status varchar(7) NOT NULL,
   PRIMARY KEY (copyNo, callNumber),
