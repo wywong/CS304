@@ -10,12 +10,14 @@ from src import TableOperation
 from src.base import base_page
 from src.cart import cart_page
 from src.borrow import borrow_page
+from src.catalogue import catalogue_page
 
 app = Flask(__name__)
 app.secret_key = 'totally not safe'
 app.register_blueprint(base_page)
 app.register_blueprint(cart_page)
 app.register_blueprint(borrow_page)
+app.register_blueprint(catalogue_page)
 
 @app.before_request
 def before_request():
@@ -38,7 +40,7 @@ def addbook():
         mainAuthor = request.form[ 'mainAuthor' ].encode('utf-8')
         publisher = request.form[ 'publisher' ].encode('utf-8')
         year = request.form[ 'year' ].encode('utf-8')
-
+        
         row = (callNum, isbn, title, mainAuthor, publisher, year)
 
         # Check if book already exists
@@ -60,21 +62,18 @@ def addbook():
 
             subject = request.form[ 'subject' ].encode('utf-8')
             authors = request.form[ 'authors' ].encode('utf-8')
-            subFields = []
-            authFields = []
 
             if subject:
-                subs = subject.split(',')
-                for s in subs:
-                    TableOperation.insertTuple('HasSubject', (callNum, s))
-
+                    TableOperation.insertTuple('HasSubject', (callNum, subject))
+            else:
+                    TableOperation.insertTuple('HasSubject', (callNum, ""))
             if authors:
-                auths = authors.split(',')
-                for a in auths:
-                    TableOperation.insertTuple('HasAuthor', (callNum, a))
+                    TableOperation.insertTuple('HasAuthor', (callNum, authors))
+            else:
+                    TableOperation.insertTuple('HasAuthor', (callNum, ""))
 
             bookCopyFields = TableOperation.getFieldNames('BookCopy')
-            bCopy = (callNum, 1, 'in')
+            bCopy = (callNum, 0, 'in')
             TableOperation.insertTuple('BookCopy', bCopy)
 
             session['result'] = [[bookFields, row], [bookCopyFields, bCopy]]
@@ -84,37 +83,6 @@ def addbook():
     return render_template('addbook.html', error=error,
                             user=g.userInfo[0], accType=g.userInfo[8])
 
-@app.route('/catalogue')
-@app.route('/catalogue/<searchtype>/<keyword>')
-def catalogue(searchtype=None,keyword=None):
-    if searchtype and keyword:
-        _searchtype = searchtype
-        _keyword = keyword
-    else:
-        _searchtype = request.args.get( 'searchtype' )
-        _keyword = request.args.get( 'keyword' )
-    if _searchtype==None or _keyword==None:
-        _searchtype = ""
-        _keyword = ""
-    else:
-        _searchtype = _searchtype.encode('utf-8')
-        _keyword = _keyword.encode('utf-8')
-    fieldnames = TableOperation.getFieldNames('Book')
-    if _searchtype == 'title':
-        rows = TableOperation.sfw('Book', ['*'],"title LIKE '%%%s%%'" % _keyword)
-    elif _searchtype == 'author':
-        if(TableOperation.sfw("Book AS b INNER JOIN HasAuthor AS a ON (b.callNumber = a.callNumber)"
-        ,["b.callNumber"],"a.name LIKE '%%%s%%' or b.mainAuthor LIKE '%%%s%%'" % (_keyword,_keyword))):
-            rows = TableOperation.sfw("Book AS b INNER JOIN HasAuthor AS a ON (b.callNumber = a.callNumber)",["b.callNumber,b.isbn,b.title,b.mainAuthor,b.publisher,b.year"],"a.name LIKE '%%%s%%' or b.mainAuthor LIKE '%%%s%%'" % (_keyword,_keyword))
-        else:
-            rows = TableOperation.sfw("Book",["callNumber,isbn,title,mainAuthor,publisher,year"],"mainAuthor LIKE '%%%s%%'" % (_keyword))
-    elif _searchtype == 'subject':
-        rows = TableOperation.sfw("Book AS b INNER JOIN HasSubject AS a ON (b.callNumber = a.callNumber)",["*"],"a.subject LIKE '%%%s%%'" % (_keyword))
-    else:
-        rows = TableOperation.getColumns('Book', ['*'])
-    session['catalogue'] = [rows]
-    session['bquery'] = rows
-    return render_template('catalogue.html', user=g.userInfo[0], accType=g.userInfo[8])
 
 @app.route('/reportcheckedout')
 @app.route('/reportcheckedout/<subject>')
