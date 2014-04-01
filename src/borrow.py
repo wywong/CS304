@@ -152,6 +152,11 @@ def returnbook():
         if fines:
             message = message + "Fines Assessed: %s" % (str(fines))
         session['message'] = message
-        return redirect(url_for('.borrowed', user=g.userInfo[0],
-            accType=g.userInfo[8], bid=session.pop('bid', None)))
+        if mails:
+            session['email'] = ['hold requests are in', mails]
+            return redirect(url_for('mailer', user=g.userInfo[0],
+                accType=g.userInfo[8], bid=session.pop('bid', None)))
+        else:
+            return redirect(url_for('.borrowed', user=g.userInfo[0],
+                accType=g.userInfo[8], bid=session.pop('bid', None)))
     return render_template('.borrow_page', user=g.userInfo[0], accType=g.userInfo[8])

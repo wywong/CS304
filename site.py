@@ -117,7 +117,7 @@ def mailer():
         try:
             msg = Message(mailData[0],
                           sender="cs304p3@gmail.com",
-                          recipients=mailData[2])
+                          recipients=mailData[1])
             mail.send(msg)
             message = "Message sent"
         except:
