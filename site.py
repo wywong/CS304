@@ -108,12 +108,12 @@ def addbook():
 @app.route("/mailer")
 def mailer():
     """ A simple mailer """
-    # [ string subject, string sender, [strings of recipients] ]
+    # [ string subject, [strings of recipients] ]
     mailData = session.pop( 'email', None )
     if mailData:
         try:
             msg = Message(mailData[0],
-                          sender=mailData[1],
+                          sender="cs304p3@gmail.com",
                           recipients=mailData[2])
             mail.send(msg)
             message = "Message sent"
