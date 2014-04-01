@@ -143,11 +143,6 @@ def returnbook():
                 settings = "status ='on-hold'"
                 mails.append(_email)
             else:
-            if checkHolds:
-
-                settings = "status ='on-hold'"
-                mails.append('wilsonwong578@gmail.com')
-            else:
                 settings = "status ='in'"
             conds = "callNumber = '%s' AND copyNo = '%s'" % tuple(copyUpdate.pop())
             TableOperation.usw('BookCopy', settings, conds)
