@@ -2,8 +2,13 @@
 {% block content %}
     {% for a_table in session.pop('report', []) %}
         {% if reporttype %}
-            <table class = "table table-striper table-hover">
             <h1> Top Books </h1>
+            <form class="form-inline" role="form">
+	        <div class="form-group">
+            <input type="text" class="form-control input" name="number" placeholder="Enter a number of top items to view">
+	        </div>
+	        <button type="submit" class="btn btn-default"><a href='/reporttop'>View</a></button>
+            <table class = "table table-striper table-hover">
             <th> # Of times Checked out
             <th> Call Number
             <th> Title </th>
@@ -16,14 +21,13 @@
             {% endfor %}
             
         {% else %}
+	        <h1>Books Checked Out</h1>
 	        <form class="form-inline" role="form">
 	        <div class="form-group">
             <input type="text" class="form-control input" name="subject" placeholder="Enter a subject to filter by">
 	        </div>
 	        <button type="submit" class="btn btn-default"><a href='/reportcheckedout'>View</a></button>
-	        
-            <table class = "table table-striper table-hover">
-                <h1>Books Checked Out</h1>
+            <table class = "table table-striper table-hover"> 
                 <th>Call Number</th>
                 <th>ISBN</th>
                 <th>Title</th>
