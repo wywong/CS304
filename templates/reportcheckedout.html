@@ -1,5 +1,6 @@
 {% extends "index.html" %}
 {% block content %}
+    {% for a_table in session.pop('reportcheckedout', []) %}
 	    <form class="form" role="search">
 	    <div class="form-group">
 		    <input type="text" class="form-control" name = "subject" placeholder="Enter a subject to filter by">
@@ -24,4 +25,5 @@
                         </tr>
                     {% endfor %}
          </table>
+    {% endfor %}
 {% endblock %}
