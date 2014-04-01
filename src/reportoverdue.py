@@ -18,7 +18,6 @@ def reportoverdue():
     overdue = [today > d for d in duedates]
     rows = TableOperation.sfw('Borrowing AS bor INNER JOIN Borrower AS b ON (bor.bid = b.bid) INNER JOIN Book AS bk ON (bor.callNumber = bk.callNumber) INNER JOIN HasSubject AS h ON (bk.callNumber = h.callNUmber) INNER JOIN BookCopy AS bc ON (bc.callNumber=bk.callNumber)', ['bk.callNumber','bk.isbn','bk.title','bk.mainAuthor','h.subject','bc.copyNo','b.name','bor.outDate'],"bor.inDate = '0000-00-00' and bor.copyNo=bc.copyNo")
     rows = [[x if type(x) is not date else str(x) for x in y] for y in rows]
-    rows = [[]for y in rows]
     [x.append(duedates.pop(0).isoformat())for x in rows]
     session['report'] = [rows]
-    return render_template('report.html',reporttype=3, user=g.userInfo[0], accType=g.userInfo[8])
+    return render_template('report.html',reporttype=2,overdue=overdue, user=g.userInfo[0], accType=g.userInfo[8])

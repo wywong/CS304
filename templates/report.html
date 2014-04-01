@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 {% block content %}
     {% for a_table in session.pop('report', []) %}
-        {% if reporttype %}
+        {% if reporttype==1 %}
             <h1> Top Books </h1>
             <form class="form-inline" role="form">
 	        <div class="form-group">
@@ -20,7 +20,7 @@
                 </tr>
             {% endfor %}
             
-        {% else %}
+        {% elif reporttype==0 %}
 	        <h1>Books Checked Out</h1>
 	        <form class="form-inline" role="form">
 	        <div class="form-group">
@@ -49,6 +49,28 @@
 						        <td>{{ item }}</td>
 					        {% endfor %}
                             </tr>
+                        {% endfor %}
+             </table>
+         {% elif reporttype==2 %}
+                <h1>Overdue Books</h1>
+                <table class = "table table-striper table-hover"> 
+                <th>Call Number</th>
+                <th>ISBN</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Subject</th>
+                <th>Copy #</th>
+                <th>Checked out By</th>
+                <th>Check out Date</th>
+                <th>Due Date</th>
+                        {% for ii in overdue %}
+                            {% if ii %}
+                                <tr>
+                                {% for item in row %}
+						        <td>{{ item }}</td>
+					            {% endfor %}
+					            </tr>
+                            {% endif %}
                         {% endfor %}
              </table>
         
