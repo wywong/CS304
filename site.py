@@ -8,17 +8,22 @@ import MySQLdb
 from src import TableOperation
 
 from src.base import base_page
-from src.cart import cart_page
 from src.borrow import borrow_page
+from src.cart import cart_page
 from src.catalogue import catalogue_page
+from src.fine import fine_page
 from src.reportcheckedout import report_checkedout_page
+
+
+
 
 app = Flask(__name__)
 app.secret_key = 'totally not safe'
 app.register_blueprint(base_page)
-app.register_blueprint(cart_page)
 app.register_blueprint(borrow_page)
+app.register_blueprint(cart_page)
 app.register_blueprint(catalogue_page)
+app.register_blueprint(fine_page)
 app.register_blueprint(report_checkedout_page)
 
 @app.before_request
@@ -42,7 +47,7 @@ def addbook():
         mainAuthor = request.form[ 'mainAuthor' ].encode('utf-8')
         publisher = request.form[ 'publisher' ].encode('utf-8')
         year = request.form[ 'year' ].encode('utf-8')
-        
+
         row = (callNum, isbn, title, mainAuthor, publisher, year)
 
         # Check if book already exists
@@ -84,9 +89,6 @@ def addbook():
 
     return render_template('addbook.html', error=error,
                             user=g.userInfo[0], accType=g.userInfo[8])
-
-
-
 
 @app.route('/show')
 def show():

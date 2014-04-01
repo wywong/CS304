@@ -6,7 +6,7 @@
 <form action="{{ url_for('cart_page.bidcheck') }}" method=post>
 	<dl>
 		<dt>bid:
-		<dd><input type=text name=bid>
+		<dd><input type=text name=bid maxlength=8>
       <dt>Borrower Action:
       <select name="bAction">
       <option value="cart" selected>View Cart</option>
