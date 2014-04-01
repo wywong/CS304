@@ -59,8 +59,16 @@ def bidcheck():
             if match:
                 expDate = match[0][7]
                 print expDate
+                unpaid = TableOperation.sfw("""Fine F INNER JOIN Borrowing B
+                        INNER JOIN Borrower R ON F.borid=B.borid AND R.bid=B.bid""",
+                        ['fid', 'amount', 'issuedDate', 'paidDate', 'F.borid'],
+                        "F.paidDate='0000-00-00' AND B.bid = '%s'" % (bid))
                 if expDate < today:
                     error = "Error borrower account is expired"
+                    return render_template('bidcheck.html', error=error,
+                                     user=g.userInfo[0], accType=g.userInfo[8])
+                elif unpaid:
+                    error = "Error borrower account has unpaid fines"
                     return render_template('bidcheck.html', error=error,
                                      user=g.userInfo[0], accType=g.userInfo[8])
                 else:
