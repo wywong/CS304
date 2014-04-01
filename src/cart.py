@@ -55,7 +55,7 @@ def addtocart():
         tocart = [x for x in rows if not [x[0]] in out]
         print tocart
         for r in tocart:
-            TableOperation.insertTuple('Cart', (g.userInfo[0], r[0]))
+            TableOperation.insertTuple('Cart', (g.userInfo[0], r[0], 0))
         difference = [x for x in rows if x not in tocart]
         message = ""
         if tocart:
