@@ -119,7 +119,7 @@ def checkouthold():
     TableOperation.insertTuple('Borrowing (bid,callNumber,copyNum,outDate,inDate),  VALUES (_bid,_callnum,_copynum,date.today().isoformat(),'0000-00-00')
     TableOperation.deleteTuple('HoldRequest','hid=%s' %_hid)
     
-    return render_tempate('checkouthold.html')
+    return render_tempate('checkoutholds.html')
     
 @app.route("/mailer")
 def mailer():
