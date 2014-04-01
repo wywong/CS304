@@ -51,7 +51,7 @@ CREATE TABLE IF NOT EXISTS BookCopy (
 );
 
 CREATE TABLE IF NOT EXISTS HoldRequest (
-  hid varchar(40) NOT NULL,
+  hid int NOT NULL AUTO_INCREMENT,
   bid char(8) NOT NULL,
   callNumber varchar(40) NOT NULL,
   issuedDate DATE NOT NULL,

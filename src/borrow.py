@@ -128,7 +128,7 @@ def returnbook():
             ymd = [int(x) for x in ymd]
             dueDate = datetime.date(ymd[0], ymd[1], ymd[2]) + datetime.timedelta(timeLimit)
             if  dueDate < date.today():
-                amount = 1
+                amount = (date.today() - dueDate).days
                 fine = (amount, date.today().isoformat(), '0000-00-00', r[0])
                 fines.append(fine)
                 TableOperation.insertTuple('Fine (amount, issuedDate, paidDate, borid)',

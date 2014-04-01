@@ -37,6 +37,7 @@ app.register_blueprint(borrow_page)
 app.register_blueprint(cart_page)
 app.register_blueprint(catalogue_page)
 app.register_blueprint(fine_page)
+app.register_blueprint(holds_page)
 app.register_blueprint(report_checkedout_page)
 
 @app.before_request

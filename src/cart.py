@@ -114,11 +114,13 @@ def cartaction(bid):
     if request.method == 'POST':
         cartOp = request.form['cartOperation'].encode('utf-8')
         session['selected'] = [x for x in request.form.keys() if x != 'cartOperation']
+        print session['selected']
         if cartOp == 'checkout' and g.userInfo[8] in ['clerk']:
             return redirect(url_for('.checkoutcart', user=g.userInfo[0],
                 accType=g.userInfo[8], bid=bid))
         elif cartOp == 'holdrequest':
-            return redirect(url_for('holds_page.addtoholds', user=g.userInfo[0], accType=g.userInfo[8]))
+            return redirect(url_for('holds_page.addtoholds', user=g.userInfo[0],
+                accType=g.userInfo[8], bid=bid))
         elif cartOp == 'remove':
             return redirect(url_for('.removefromcart', user=g.userInfo[0],
                 accType=g.userInfo[8], bid=bid))
