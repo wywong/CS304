@@ -132,13 +132,19 @@ def returnbook():
                 fines.append(fine)
                 TableOperation.insertTuple('Fine (amount, issuedDate, paidDate, borid)',
                         fine)
-# SELECT * FROM HoldRequest WHERE hid in (SELECT MIN(hid) FROM HoldRequest WHERE issuedDate='0000-00-00')
-            checkHolds = TableOperation.sfw('HoldRequest', ['*'],
-                    """hid in (SELECT MIN(hid) FROM HoldRequest WHERE issuedDate='0000-00-00')""")
+            checkHolds = TableOperation.sfw('HoldRequest AS h INNER JOIN Borrowing AS bor ON (h.callNumber=bor.callNumber) ORDER BY h.hid ASC', ['h.hid'],'bor.borid=%s' % _borid)
             print checkHolds
             if checkHolds:
-                TableOperation.usw('HoldRequest', "issuedDate='%s'" %(date.today().isoformat()),
-                    "hid='%s'" % (checkHolds[0][0]))
+                _hid = checkHolds[0][0]
+                TableOperation.usw('HoldRequest', "issuedDate='%s'" %(date.today().isoformat()),"hid='%s'" % _hid)
+                result = TableOperation.sfw("Borrower AS b INNER JOIN HoldRequest as h ON (h.bid=b.bid)",['b.bid','b.emailAddress'],'h.hid=%s' % _hid)
+                _bid = result[0][0]
+                _email = result[0][1]
+                settings = "status ='on-hold'"
+                mails.append(_email)
+            else:
+            if checkHolds:
+
                 settings = "status ='on-hold'"
                 mails.append('wilsonwong578@gmail.com')
             else:
