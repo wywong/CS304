@@ -85,7 +85,6 @@ INSERT INTO HasAuthor VALUES ('CD.45.098','O.B. Sack, O.U.B.');
 INSERT INTO BookCopy VALUES ('CD.45.098', 0, 'in');
 
 
-INSERT INTO Fine (amount, issuedDate, paidDate, borid) VALUES (100,'2012-01-31','0000-00-00',1);
 
 INSERT INTO HasSubject VALUES ('CD.45.098','Fiction, Horror, Suspense');
 
@@ -96,7 +95,6 @@ INSERT INTO HasAuthor VALUES ('FG.235.331','O.B. Sack');
 INSERT INTO BookCopy VALUES ('FG.235.331', 0, 'in');
 
 
-INSERT INTO Fine (amount, issuedDate, paidDate, borid) VALUES (101,'2012-01-31','2012-02-31',2);
 
 INSERT INTO BookCopy VALUES ('FG.235.331', 2, 'in');
 
@@ -118,7 +116,6 @@ INSERT INTO BookCopy VALUES ('EH.825.321', 3, 'in');
 INSERT INTO BookCopy VALUES ('EH.825.321', 2, 'in');
 
 
-INSERT INTO Fine (amount, issuedDate, paidDate, borid) VALUES (103,'2012-01-31','2012-02-31',3);
 
 INSERT INTO BookCopy VALUES ('EH.825.321', 0, 'in');
 
