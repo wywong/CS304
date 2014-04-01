@@ -35,4 +35,34 @@
 		</dl>
 	</form>
 </table>
+{% for a_table in session.pop('holds', []) %}
+	<form action="/holdaction/{{ bid }}" method=post>
+		<dl>
+    <table class = "table table-striper table-hover">
+        <th>
+        {% for h in hname %}
+          <th>{{ h }}</th>
+        {% endfor %}
+        {% for row in a_table %}
+        <tr>
+          <td><dd><input type="checkbox" name="{{loop.index-1}}"></td>
+					{% for item in row %}
+						<td>{{ item }}</td>
+					{% endfor %}
+        </tr>
+        {% endfor %}
+		<dt>
+      <select name="cartOperation">
+      {% if accType in ['clerk'] %}
+        <option value="checkout" selected>Checkout</option>
+        <option value="holdrequest">Place Hold Request</option>
+      {% else %}
+        <option value="holdrequest" selected>Place Hold Request</option>
+      {% endif %}
+      <option value="remove">Remove from Cart</option>
+      </select>
+		<dd><input type=submit value="Submit">
+    {% endfor %}
+		</dl>
+	</form>
 {% endblock %}

@@ -22,8 +22,12 @@ def viewcart(bid=None):
             "callNumber IN (SELECT callNumber FROM Cart WHERE bid = '%s')" % (_bid))
     session['cart'] = [rows]
     session['bquery'] = rows
+    rows = TableOperation.sfw('HoldRequest', ['*'],
+            "bid = '%s' AND issuedDate = '0000-00-00'" % (_bid))
+    session['holds'] = [rows]
+    hname = TableOperation.getFieldNames('HoldRequest')
     return render_template('cart.html', user=g.userInfo[0], accType=g.userInfo[8],
-            bid=_bid, message=session.pop('message', None))
+            bid=_bid, message=session.pop('message', None), hname=hname)
 
 @cart_page.route('/addtocart', methods=['POST', 'GET'])
 def addtocart():
