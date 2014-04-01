@@ -109,14 +109,19 @@ def addbook():
                             user=g.userInfo[0], accType=g.userInfo[8])
 @app.route("/checkouthold", methods=['POST', 'GET'])
 def checkouthold():
-    _hid = request.form[ 'hid' ].encode('utf-8')
-    _bid = request.form[ 'bid' ].encode('utf-8')
-    bookresult = TableOperation.sfw("Borrower as b INNER JOIN HoldRequest as h ON (h.bid = b.bid) INNER JOIN BookCopy AS bc ON (h.callNumber = bc.callNumber)",
-            ['b.callNumber','bc.copyNum'],"bc.status='on-hold'")
-    _callnum = bookresult[0][0]
-    _copynum = bookresult[0][1]
-    TableOperation.insertTuple('Borrowing (bid,callNumber,copyNum,outDate,inDate),  VALUES (_bid,_callnum,_copynum,date.today().isoformat()','0000-00-00')
-    TableOperation.deleteTuple('HoldRequest','hid=%s' %_hid)
+    if request.method == 'POST':
+        _hid = request.form[ 'hid' ].encode('utf-8')
+        _bid = request.form[ 'bid' ].encode('utf-8')
+        bookresult = TableOperation.sfw("Borrower as b INNER JOIN HoldRequest as h ON (h.bid = b.bid) INNER JOIN BookCopy AS bc ON (h.callNumber = bc.callNumber)",
+                ['b.callNumber','bc.copyNum'],"bc.status='on-hold'")
+        _callnum = bookresult[0][0]
+        _copynum = bookresult[0][1]
+        row = (_bid,_callnum,_copynum,date.today().isoformat(),'0000-00-00')
+        TableOperation.insertTuple('Borrowing (bid,callNumber,copyNum,outDate,inDate)', row)
+        TableOperation.deleteTuple('HoldRequest','hid=%s' %_hid)
+        fields = TableOperation.getFieldNames('Borrower')
+        session['result'] = [[fields, row]]
+        return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8]))
     return render_tempate('checkoutholds.html')
 @app.route("/mailer")
 def mailer():
