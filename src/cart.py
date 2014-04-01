@@ -18,14 +18,18 @@ def viewcart(bid=None):
         _bid = bid
     else:
         _bid = g.userInfo[0]
+
     rows = TableOperation.sfw('Book', ['*'],
             "callNumber IN (SELECT callNumber FROM Cart WHERE bid = '%s')" % (_bid))
     session['cart'] = [rows]
     session['bquery'] = rows
+
     rows = TableOperation.sfw('HoldRequest', ['*'],
             "bid = '%s' AND issuedDate = '0000-00-00'" % (_bid))
     session['holds'] = [rows]
+    session['hquery'] = rows
     hname = TableOperation.getFieldNames('HoldRequest')
+
     return render_template('cart.html', user=g.userInfo[0], accType=g.userInfo[8],
             bid=_bid, message=session.pop('message', None), hname=hname)
 
@@ -104,7 +108,7 @@ def cartaction(bid):
             return redirect(url_for('.checkoutcart', user=g.userInfo[0],
                 accType=g.userInfo[8], bid=bid))
         elif cartOp == 'holdrequest':
-            return redirect(url_for('.viewcart', user=g.userInfo[0], accType=g.userInfo[8]))
+            return redirect(url_for('holds_page.addtoholds', user=g.userInfo[0], accType=g.userInfo[8]))
         elif cartOp == 'remove':
             return redirect(url_for('.removefromcart', user=g.userInfo[0],
                 accType=g.userInfo[8], bid=bid))

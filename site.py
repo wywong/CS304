@@ -12,10 +12,8 @@ from src.borrow import borrow_page
 from src.cart import cart_page
 from src.catalogue import catalogue_page
 from src.fine import fine_page
+from src.holds import holds_page
 from src.reportcheckedout import report_checkedout_page
-
-
-
 
 app = Flask(__name__)
 app.secret_key = 'totally not safe'
