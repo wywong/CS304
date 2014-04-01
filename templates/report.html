@@ -62,15 +62,17 @@
                 <th>Copy #</th>
                 <th>Checked out By</th>
                 <th>Check out Date</th>
-                <th>Due Date</th>
-                        {% for ii in overdue %}
-                            {% if ii %}
+                <th>Due Date</th><th></th>
+                        {% for row in a_table %}
+                            {% if overdue.pop(0) %}
                                 <tr>
-                                {% for item in row %}
-						        <td>{{ item }}</td>
-					            {% endfor %}
-					            </tr>
+                            {% else %}
+                                <tr class='hide'>
                             {% endif %}
+                            {% for item in row %}
+						        <td>{{ item }}</td>
+					        {% endfor %}
+                            <td><button>Email</button></td></tr>
                         {% endfor %}
              </table>
         
