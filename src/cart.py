@@ -39,11 +39,21 @@ def addtocart():
         selectable = session['bquery']
         print selectable
 
+        out = TableOperation.sfw('Borrowing', ['callNumber'],
+                "bid = '%s' AND inDate='0000-00-00'" % (g.userInfo[0]))
+        print out
         rows = [selectable[int(s)] for s in selected]
-        for r in rows:
+        print rows
+        tocart = [x for x in rows if not [x[0]] in out]
+        print tocart
+        for r in tocart:
             TableOperation.insertTuple('Cart', (g.userInfo[0], r[0]))
-
-        message = "Added to cart: %s" % (rows)
+        difference = [x for x in rows if x not in tocart]
+        message = ""
+        if tocart:
+            message = message + "Added to cart: %s" % (tocart)
+        if difference:
+            message = message + "Already Checked out: %s" % (difference)
         session['message'] = message
 
     return redirect(url_for('.viewcart', user=g.userInfo[0], accType=g.userInfo[8]))
