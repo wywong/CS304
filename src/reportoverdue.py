@@ -5,6 +5,9 @@ from jinja2 import TemplateNotFound
 import MySQLdb
 import TableOperation
 
+from datetime import date
+import datetime
+
 report_overdue_page = Blueprint('report_overdue_page', __name__)
 
 @report_overdue_page.route('/reportoverdue')
