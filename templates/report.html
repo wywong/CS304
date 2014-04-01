@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 {% block content %}
     {% for a_table in session.pop('report', []) %}
-        {% if reporttype %}
+        {% if reporttype==1 %}
             <h1> Top Books </h1>
             <form class="form-inline" role="form">
 	        <div class="form-group">
@@ -20,7 +20,7 @@
                 </tr>
             {% endfor %}
             
-        {% else %}
+        {% elif reporttype==0 %}
 	        <h1>Books Checked Out</h1>
 	        <form class="form-inline" role="form">
 	        <div class="form-group">
@@ -37,18 +37,40 @@
                 <th>Checked out By</th>
                 <th>Check out Date</th>
                 <th>Due Date</th>
-                        {% for ii in overdue %}
-                            {% if ii %}
+                        {% for row in a_table %}
+                            {% if overdue.pop(0) %}
                                 <tr bgcolor="FF8888" >
                             {% else %}
                                 <tr>
                             {% endif %}
-                        {% endfor %}
-                        {% for row in a_table %}
                             {% for item in row %}
 						        <td>{{ item }}</td>
 					        {% endfor %}
                             </tr>
+                        {% endfor %}
+             </table>
+         {% elif reporttype==2 %}
+                <h1>Overdue Books</h1>
+                <table class = "table table-striper table-hover"> 
+                <th>Call Number</th>
+                <th>ISBN</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Subject</th>
+                <th>Copy #</th>
+                <th>Checked out By</th>
+                <th>Check out Date</th>
+                <th>Due Date</th><th></th>
+                        {% for row in a_table %}
+                            {% if overdue.pop(0) %}
+                                <tr>
+                            {% else %}
+                                <tr class='hide'>
+                            {% endif %}
+                            {% for item in row %}
+						        <td>{{ item }}</td>
+					        {% endfor %}
+                            <td><button><a href='mailto:{{emails.pop(0)}}?Subject=Your%20Book%20{{book.pop(0)}}%20is%20Overdue'>Email Overdue Notice</a></button></td></tr>
                         {% endfor %}
              </table>
         

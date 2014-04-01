@@ -151,7 +151,6 @@ INSERT INTO BookCopy VALUES ('WG.58.351', 2, 'in');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 3, 'in');
 
-
 INSERT INTO BookCopy VALUES ('WG.58.351', 4, 'in');
 
 
