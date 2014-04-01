@@ -35,7 +35,8 @@ def addborrower():
         borrowerFields = TableOperation.getFieldNames('Borrower')
         session['result'] = [[borrowerFields, row]]
         TableOperation.insertTuple('Borrower', tuple(row))
-        return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8]))
+        return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8],
+                message='Added Borrower'))
 
     return render_template('addborrower.html', error=error,
                             user=g.userInfo[0], accType=g.userInfo[8])
@@ -91,7 +92,7 @@ def borrowed(bid=None):
         session['bquery'] = rows
         session['bid'] = bid
         return render_template('returnbook.html', user=g.userInfo[0], accType=g.userInfo[8],
-                message=session['message'])
+                message=session.pop('message', None))
     else:
         rows.insert(0, fieldNames)
         session['result'] = [rows]
@@ -115,8 +116,7 @@ def returnbook():
             bid = intersection[0][1]
             timeLimit = TableOperation.sfw("""Borrower INNER JOIN BorrowerType
                                     ON Borrower.type=BorrowerType.type""",
-                                    ['bookTimeLimit'],
-                                    "bid = '%s'" % (bid))[0][0] * 7
+                                    ['bookTimeLimit'], "bid = '%s'" % (bid))[0][0] * 7
         fines = []
         for r in intersection:
             settings = "inDate = '%s'" % (date.today().isoformat())
@@ -141,5 +141,5 @@ def returnbook():
             message = message + "Fines Assessed: %s" % (str(fines))
         session['message'] = message
         return redirect(url_for('.borrowed', user=g.userInfo[0],
-            accType=g.userInfo[8], bid=session.pop('bid')))
+            accType=g.userInfo[8], bid=session.pop('bid', None)))
     return render_template('.borrow_page', user=g.userInfo[0], accType=g.userInfo[8])

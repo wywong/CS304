@@ -27,7 +27,7 @@ def viewfine(bid=None):
     session['bquery'] = rows
     session['fine'] = [rows]
     return render_template('fine.html', user=g.userInfo[0], accType=g.userInfo[8],
-            bid=_bid, message=session['message'], fname=fieldNames)
+            bid=_bid, message=session.pop('message', None), fname=fieldNames)
 
 @fine_page.route('/fineaction/<bid>', methods=['POST', 'GET'])
 def fineaction(bid):

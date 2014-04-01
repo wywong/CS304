@@ -70,4 +70,4 @@ def logout():
 def result():
     """ Return the result of an insert """
     return render_template('result.html',
-            user=g.userInfo[0], accType=g.userInfo[8], message=session['message'])
+            user=g.userInfo[0], accType=g.userInfo[8], message=session.pop('message', None))
