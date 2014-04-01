@@ -133,14 +133,20 @@ def returnbook():
                 TableOperation.insertTuple('Fine (amount, issuedDate, paidDate, borid)',
                         fine)
 # SELECT * FROM HoldRequest WHERE hid in (SELECT MIN(hid) FROM HoldRequest WHERE issuedDate='0000-00-00')
-            checkHolds = TableOperation.sfw('HoldRequest', ['*'],
-                    """hid in (SELECT MIN(hid) FROM HoldRequest WHERE issuedDate='0000-00-00')""")
+            checkHolds = TableOperation.getColumns('HoldRequest', ['*'],
+                    """hid in (SELECT MIN(hid) FROM HoldRequest')""")
             print checkHolds
             if checkHolds:
-                TableOperation.usw('HoldRequest', "issuedDate='%s'" %(date.today().isoformat()),
-                    "hid='%s'" % (checkHolds[0][0]))
+                _hid = checkHolds[0][0]
+                result = TableOperation.sfw("Borrower AS b INNER JOIN HoldRequest as h ON (h.bid=b.bid)",['b.bid','b.emailAddress'],'h.hid=%s' % _hid)
+                _bid = result[0][0]
+                _email = result[0][1]
+                _callNumber = checkHolds[0][1]
+                row = [_hid,_callNumber,1]
+                TableOperation.insertTuple('Cart',str(row))
+                TableOperation.deleteTuple('HoldRequest','hid=%s' %_hid)
                 settings = "status ='on-hold'"
-                mails.append('wilsonwong578@gmail.com')
+                mails.append(_email)
             else:
                 settings = "status ='in'"
             conds = "callNumber = '%s' AND copyNo = '%s'" % tuple(copyUpdate.pop())
