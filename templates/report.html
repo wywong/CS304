@@ -37,14 +37,12 @@
                 <th>Checked out By</th>
                 <th>Check out Date</th>
                 <th>Due Date</th>
-                        {% for ii in overdue %}
-                            {% if ii %}
+                        {% for row in a_table %}
+                            {% if overdue.pop(0) %}
                                 <tr bgcolor="FF8888" >
                             {% else %}
                                 <tr>
                             {% endif %}
-                        {% endfor %}
-                        {% for row in a_table %}
                             {% for item in row %}
 						        <td>{{ item }}</td>
 					        {% endfor %}
