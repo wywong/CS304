@@ -2,6 +2,8 @@
 
 from flask import Flask, request, session, url_for, redirect, \
      render_template, abort, g, flash
+from flask_mail import Mail
+from flask.ext.mail import Message
 
 from functools import wraps
 import MySQLdb
@@ -16,6 +18,19 @@ from src.holds import holds_page
 from src.reportcheckedout import report_checkedout_page
 
 app = Flask(__name__)
+
+mail = Mail(app)
+app.config.update(
+        DEBUG=True,
+        #EMAIL SETTINGS
+        MAIL_SERVER='smtp.gmail.com',
+        MAIL_PORT=465,
+        MAIL_USE_SSL=True,
+        MAIL_USERNAME = 'cs304p3@gmail.com',
+        MAIL_PASSWORD = '01189998819991197253'
+        )
+mail=Mail(app)
+
 app.secret_key = 'totally not safe'
 app.register_blueprint(base_page)
 app.register_blueprint(borrow_page)
@@ -87,6 +102,26 @@ def addbook():
 
     return render_template('addbook.html', error=error,
                             user=g.userInfo[0], accType=g.userInfo[8])
+
+@app.route("/mailer")
+def mailer():
+    """ A simple mailer """
+    # [ string subject, string sender, [strings of recipients] ]
+    mailData = session.pop( 'email', None )
+    if mailData:
+        try:
+            msg = Message(mailData[0],
+                          sender=mailData[1],
+                          recipients=mailData[2])
+            mail.send(msg)
+            message = "Message sent"
+        except:
+            message = "Invalid message data"
+    else:
+        message = "No mail data passed"
+    session['result'] = []
+    return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8],
+        message=message))
 
 @app.route('/show')
 def show():

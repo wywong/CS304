@@ -3,6 +3,11 @@ CPSC 304
 
 Setup
 =====
+
+Make sure you have the appropriate MySQL packages installed.
+
+Get `python-pip` and `python-virtualenv`
+
 Set up the virtual environment.
 
 `virtualenv env`
