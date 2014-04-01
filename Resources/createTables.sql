@@ -80,6 +80,7 @@ CREATE TABLE IF NOT EXISTS Fine (
 CREATE TABLE IF NOT EXISTS Cart (
   bid char(8) NOT NULL,
   callNumber varchar(40) NOT NULL,
+  isHold int NOT NULL,
   PRIMARY KEY (bid, callNumber),
   FOREIGN KEY (callNumber) REFERENCES Book(callNumber)
 );

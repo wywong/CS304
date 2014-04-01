@@ -20,12 +20,16 @@ def viewcart(bid=None):
         _bid = g.userInfo[0]
 
     rows = TableOperation.sfw('Book', ['*'],
-            "callNumber IN (SELECT callNumber FROM Cart WHERE bid = '%s')" % (_bid))
+            "callNumber IN (SELECT callNumber FROM Cart WHERE bid = '%s' and isHold=0)" % (_bid))
     session['cart'] = [rows]
     session['bquery'] = rows
-
+    
+    rows = TableOperation.sfw('Book', ['*'],"callNumber IN (SELECT callNumber FROM Cart WHERE bid = '%s' and isHold = 1)" % (_bid))
+    session['readyforpickup'] = [rows]
+    session['readyquery'] = rows
+    
     rows = TableOperation.sfw('HoldRequest', ['*'],
-            "bid = '%s' AND issuedDate = '0000-00-00'" % (_bid))
+            "bid = '%s'" % (_bid))
     session['holds'] = [rows]
     session['hquery'] = rows
     hname = TableOperation.getFieldNames('HoldRequest')

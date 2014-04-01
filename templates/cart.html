@@ -4,7 +4,7 @@
 {% if message %}<strong>Message:</strong> {{ message }}{% endif %}
 	<form action="/cartaction/{{ bid }}" method=post>
 		<dl>
-    <table class = "table table-striper table-hover">
+    <table name="current_cart" class = "table table-striper table-hover">
         <th>
         <th>Call Number</th>
         <th>ISBN</th>
@@ -35,10 +35,10 @@
 		</dl>
 	</form>
 </table>
-{% for a_table in session.pop('holds', []) %}
-	<form action="/holdsaction/{{ bid }}" method=post>
+{% for a_table in session.pop('readyforpickup', []) %}
+<form action="/holdsaction/{{ bid }}" method=post>
 		<dl>
-    <table class = "table table-striper table-hover">
+    <table name="manage_holds_ready_for_pickup" class = "table table-striper table-hover">
         <th>
         {% for h in hname %}
           <th>{{ h }}</th>
@@ -62,4 +62,21 @@
     {% endfor %}
 		</dl>
 	</form>
+
+
+{% for a_table in session.pop('holds', []) %}
+    <table name="view_placed_holds" class = "table table-striper table-hover">
+        <th>
+        {% for h in hname %}
+          <th>{{ h }}</th>
+        {% endfor %}
+        {% for row in a_table %}
+        <tr>
+          <td><dd><input type="checkbox" name="{{loop.index-1}}"></td>
+					{% for item in row %}
+						<td>{{ item }}</td>
+					{% endfor %}
+        </tr>
+        {% endfor %}
+    {% endfor %}
 {% endblock %}
