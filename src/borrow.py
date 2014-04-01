@@ -141,7 +141,7 @@ def returnbook():
                 _bid = result[0][0]
                 _email = result[0][1]
                 _callNumber = checkHolds[0][1]
-                row = [int(_hid),_callNumber,1]
+                row = [int(_bid),_callNumber,1]
                 TableOperation.insertTuple('Cart',tuple(row))
                 TableOperation.deleteTuple('HoldRequest','hid=%s' %_hid)
                 settings = "status ='on-hold'"
