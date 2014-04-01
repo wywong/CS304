@@ -10,6 +10,8 @@ catalogue_page = Blueprint('catalogue_page', __name__)
 @catalogue_page.route('/catalogue')
 @catalogue_page.route('/catalogue/<searchtype>/<keyword>')
 def catalogue(searchtype=None,keyword=None):
+    if not g.userInfo:
+        return redirect(url_for('base_page.login'))
     if searchtype and keyword:
         _searchtype = searchtype
         _keyword = keyword
