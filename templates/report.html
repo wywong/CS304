@@ -1,0 +1,57 @@
+{% extends "index.html" %}
+{% block content %}
+    {% for a_table in session.pop('report', []) %}
+        {% if reporttype %}
+            <h1> Top Books </h1>
+            <form class="form-inline" role="form">
+	        <div class="form-group">
+            <input type="text" class="form-control input" name="number" placeholder="Enter a number of top items to view">
+	        </div>
+	        <button type="submit" class="btn btn-default"><a href='/reporttop'>View</a></button>
+            <table class = "table table-striper table-hover">
+            <th> # Of times Checked out
+            <th> Call Number
+            <th> Title </th>
+            {% for row in a_table %}
+                <tr>
+                {% for item in row %}
+			        <td>{{ item }}</td>
+		        {% endfor %}
+                </tr>
+            {% endfor %}
+            
+        {% else %}
+	        <h1>Books Checked Out</h1>
+	        <form class="form-inline" role="form">
+	        <div class="form-group">
+            <input type="text" class="form-control input" name="subject" placeholder="Enter a subject to filter by">
+	        </div>
+	        <button type="submit" class="btn btn-default"><a href='/reportcheckedout'>View</a></button>
+            <table class = "table table-striper table-hover"> 
+                <th>Call Number</th>
+                <th>ISBN</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Subject</th>
+                <th>Copy #</th>
+                <th>Checked out By</th>
+                <th>Check out Date</th>
+                <th>Due Date</th>
+                        {% for ii in overdue %}
+                            {% if ii %}
+                                <tr bgcolor="FF8888" >
+                            {% else %}
+                                <tr>
+                            {% endif %}
+                        {% endfor %}
+                        {% for row in a_table %}
+                            {% for item in row %}
+						        <td>{{ item }}</td>
+					        {% endfor %}
+                            </tr>
+                        {% endfor %}
+             </table>
+        
+        {% endif %}
+    {% endfor %}
+{% endblock %}
