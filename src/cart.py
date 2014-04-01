@@ -122,6 +122,9 @@ def cartaction(bid):
         if cartOp == 'checkout' and g.userInfo[8] in ['clerk']:
             return redirect(url_for('.checkoutcart', user=g.userInfo[0],
                 accType=g.userInfo[8], bid=bid))
+        elif cartOp == 'checkouthold'and g.userInfo[8] in ['clerk']:
+            return redirect(url_for('.checkoutholdcart', user=g.userInfo[0],
+                accType=g.userInfo[8], bid=bid))
         elif cartOp == 'holdrequest':
             return redirect(url_for('holds_page.addtoholds', user=g.userInfo[0],
                 accType=g.userInfo[8], bid=bid))
@@ -133,6 +136,47 @@ def cartaction(bid):
                 accType=g.userInfo[8], bid=bid))
     return render_template('base_page.result', user=g.userInfo[0], accType=g.userInfo[8])
 
+@cart_page.route('/checkoutholdcart/<bid>', methods=['GET'])
+def checkoutholdcart(bid):
+    if not g.userInfo or bid == None:
+        return redirect(url_for('base_page.index', user=None))
+    selected = session['selected']
+    selectable = [session['readyquery'][int(s)] for s in selected]
+
+    borrowable = [s for s in selectable if TableOperation.sfw('BookCopy', ['*'],
+                "status = 'on-hold' AND callNumber = '%s'" %(s[0]))]
+    intersection = [x for x in borrowable if x in selectable]
+    copyTable = [TableOperation.getFieldNames('BookCopy')]
+    borTable = [TableOperation.getFieldNames('Borrowing')]
+    for r in intersection:
+        copy = TableOperation.sfw('BookCopy', ['callNumber', 'MIN(CopyNo)'],
+                "callNumber = '%s' AND status = 'on-hold'" % (r[0]))
+        copyTable.append(TableOperation.sfw('BookCopy', ['*'],
+            "callNumber = '%s' AND copyNo = '%s'" %tuple(copy[0]))[0])
+        conds = "callNumber='%s' AND copyNo='%s'" % tuple(copy[0])
+        TableOperation.usw('BookCopy', "status='out'", conds)
+        borrowing = (bid.encode('utf-8'), copy[0][0], int(copy[0][1]),
+                date.today().isoformat(), '0000-00-00')
+        TableOperation.insertTuple('Borrowing (bid, callNumber, copyNo, outDate, inDate)',
+                borrowing)
+        borid = TableOperation.selectFrom('Borrowing', ['MAX(Borid)'])[0]
+        bor = borid + list(borrowing)
+        borTable.append(bor)
+        TableOperation.deleteTuple('Cart',
+                "bid = '%s' AND callNumber = '%s'" %(bid, r[0]))
+
+    difference = [x for x in selectable if x not in intersection]
+    message = ""
+    if intersection:
+        message = message + "Checkedout: %s " % (str(intersection))
+    if difference:
+        message = message + "No available copies for: %s" % (str(difference))
+    session['message'] = message
+    session['result'] = [copyTable, borTable]
+    return redirect(url_for('base_page.result',
+        user=g.userInfo[0], accType=g.userInfo[8]))
+        
+        
 @cart_page.route('/checkoutcart/<bid>', methods=['GET'])
 def checkoutcart(bid):
     if not g.userInfo or bid == None:
