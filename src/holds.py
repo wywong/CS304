@@ -56,7 +56,7 @@ def removefromholds(bid):
 
     remove = [removable[int(s)] for s in selected]
     for r in remove:
-        TableOperation.deleteTuple('Holds',
+        TableOperation.deleteTuple('HoldRequest',
                 "hid = '%s' AND issuedDate = '0000-00-00'" %(r[0]))
 
     message = "Books removed from holds: %s" % (str(remove))
