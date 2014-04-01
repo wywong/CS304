@@ -84,7 +84,7 @@ INSERT INTO HasAuthor VALUES ('CD.45.098','O.B. Sack, O.U.B.');
 
 INSERT INTO BookCopy VALUES ('CD.45.098', 0, 'in');
 
-INSERT INTO Borrowing VALUES ('00000009','CD.45.098',0,'2012-01-01', '2012-01-31');
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000009','CD.45.098',0,'2012-01-01', '2012-01-31');
 
 INSERT INTO Fine VALUES (100,'2012-01-31','0000-00-00',1);
 
@@ -96,17 +96,17 @@ INSERT INTO HasAuthor VALUES ('FG.235.331','O.B. Sack');
 
 INSERT INTO BookCopy VALUES ('FG.235.331', 0, 'in');
 
-INSERT INTO Borrowing VALUES ('00000004','FG.235.331',0,'2012-01-02', '2012-01-31');
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000004','FG.235.331',0,'2012-01-02', '2012-01-31');
 
 INSERT INTO Fine VALUES (101,'2012-01-31','2012-02-31',2);
 
 INSERT INTO BookCopy VALUES ('FG.235.331', 2, 'on hold');
 
-INSERT INTO HoldRequest VALUES ('00000001', '00000009', 'FG.235.331', '2001-01-08');
+INSERT INTO HoldRequest VALUES (0, '00000009', 'FG.235.331', '2001-01-08');
 
 INSERT INTO BookCopy VALUES ('FG.235.331', 1, 'on hold');
 
-INSERT INTO HoldRequest VALUES ('00000002', '00000008', 'FG.235.331', '2001-01-08');
+INSERT INTO HoldRequest VALUES (1, '00000008', 'FG.235.331', '2001-01-08');
 
 INSERT INTO HasSubject VALUES ('FG.235.331','Non-Fiction, History, Scholar');
 
@@ -116,19 +116,19 @@ INSERT INTO HasAuthor VALUES ('EH.825.321','O.U.B.');
 
 INSERT INTO BookCopy VALUES ('EH.825.321', 1, 'on hold');
 
-INSERT INTO HoldRequest VALUES ('00000003', '00000007', 'EH.825.321', '2001-01-08');
+INSERT INTO HoldRequest VALUES (2, '00000007', 'EH.825.321', '2001-01-08');
 
 INSERT INTO BookCopy VALUES ('EH.825.321', 3, 'in');
 
 INSERT INTO BookCopy VALUES ('EH.825.321', 2, 'in');
 
-INSERT INTO Borrowing VALUES ('00000002','EH.825.321',2,'2012-01-03', '2012-01-31');
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000002','EH.825.321',2,'2012-01-03', '2012-01-31');
 
 INSERT INTO Fine VALUES (103,'2012-01-31','2012-02-31',3);
 
 INSERT INTO BookCopy VALUES ('EH.825.321', 0, 'on hold');
 
-INSERT INTO HoldRequest VALUES ('00000004', '00000006', 'EH.825.321', '2001-01-08');
+INSERT INTO HoldRequest VALUES (3, '00000006', 'EH.825.321', '2001-01-08');
 
 INSERT INTO HasSubject VALUES ('EH.825.321','Non-Fiction, History, Suspense');
 
@@ -140,7 +140,7 @@ INSERT INTO BookCopy VALUES ('JKR.235.3781', 1, 'in');
 
 INSERT INTO BookCopy VALUES ('JKR.235.3781', 0, 'on hold');
 
-INSERT INTO HoldRequest VALUES ('00000005', '00000005', 'JKR.235.3781', '2001-01-08');
+INSERT INTO HoldRequest VALUES (4, '00000005', 'JKR.235.3781', '2001-01-08');
 
 INSERT INTO HasSubject VALUES ('JKR.235.3781','Fiction, Humor, Suspense');
 
@@ -150,51 +150,51 @@ INSERT INTO HasAuthor VALUES ('WG.58.351','O.B. Sack, O.U.B.');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 1, 'out');
 
-INSERT INTO Borrowing VALUES ('00000001','WG.58.351',1,'2012-01-04', '0000-00-00');
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000001','WG.58.351',1,'2012-01-04', '0000-00-00');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 0, 'out');
 
-INSERT INTO Borrowing VALUES ('00000005','WG.58.351',0,'2012-01-11', '0000-00-00');
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000005','WG.58.351',0,'2012-01-11', '0000-00-00');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 2, 'out');
 
-INSERT INTO Borrowing VALUES ('00000006','WG.58.351',2,'2012-01-13', '0000-00-00');
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000006','WG.58.351',2,'2012-01-13', '0000-00-00');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 3, 'out');
 
-INSERT INTO Borrowing VALUES ('00000002','WG.58.351',3,'2012-01-12', '0000-00-00');
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000002','WG.58.351',3,'2012-01-12', '0000-00-00');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 4, 'out');
 
-INSERT INTO Borrowing VALUES ('00000003','WG.58.351',4,'2012-01-14', '0000-00-00');
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000003','WG.58.351',4,'2012-01-14', '0000-00-00');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 5, 'on hold');
 
-INSERT INTO HoldRequest VALUES ('00000006', '00000004', 'WG.58.351', '2001-01-08');
+INSERT INTO HoldRequest VALUES (5, '00000004', 'WG.58.351', '2001-01-08');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 6, 'on hold');
 
-INSERT INTO HoldRequest VALUES ('00000007', '00000006', 'WG.58.351', '2001-01-08');
+INSERT INTO HoldRequest VALUES (6, '00000006', 'WG.58.351', '2001-01-08');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 7, 'on hold');
 
-INSERT INTO HoldRequest VALUES ('00000008', '00000007', 'WG.58.351', '2001-01-08');
+INSERT INTO HoldRequest VALUES (6, '00000007', 'WG.58.351', '2001-01-08');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 8, 'on hold');
 
-INSERT INTO HoldRequest VALUES ('00000009', '00000008', 'WG.58.351', '2001-01-08');
+INSERT INTO HoldRequest VALUES (7, '00000008', 'WG.58.351', '2001-01-08');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 9, 'on hold');
 
-INSERT INTO HoldRequest VALUES ('00000010', '00000009', 'WG.58.351', '2001-01-08');
+INSERT INTO HoldRequest VALUES (8, '00000009', 'WG.58.351', '2001-01-08');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 10, 'on hold');
 
-INSERT INTO HoldRequest VALUES ('00000011', '00000010', 'WG.58.351', '2001-01-08');
+INSERT INTO HoldRequest VALUES (9, '00000010', 'WG.58.351', '2001-01-08');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 11, 'on hold');
 
-INSERT INTO HoldRequest VALUES ('00000012', '00000005', 'WG.58.351', '2001-01-10');
+INSERT INTO HoldRequest VALUES (10, '00000005', 'WG.58.351', '2001-01-10');
 
 INSERT INTO HasSubject VALUES ('WG.58.351','Fiction, Adult, Humor');
 
@@ -204,7 +204,7 @@ INSERT INTO HasAuthor VALUES ('DG.487.339','O.B. Sack, O.U.B.');
 
 INSERT INTO BookCopy VALUES ('DG.487.339', 0, 'out');
 
-INSERT INTO Borrowing VALUES ('00000007','DG.487.339',0,'2012-01-17', '0000-00-00');
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000007','DG.487.339',0,'2012-01-17', '0000-00-00');
 
 INSERT INTO HasSubject VALUES ('DG.487.339','Non-fiction, History, Humor, Scholar');
 
@@ -222,7 +222,7 @@ INSERT INTO HasAuthor VALUES ('KK.45.391','O.B. Sack, O.U.B.');
 
 INSERT INTO BookCopy VALUES ('KK.45.391', 0, 'on hold');
 
-INSERT INTO HoldRequest VALUES ('00000013', '00000005', 'KK.45.391', '2001-01-09');
+INSERT INTO HoldRequest VALUES (11, '00000005', 'KK.45.391', '2001-01-09');
 
 INSERT INTO HasSubject VALUES ('KK.45.391','Non-fiction, Food, History');
 
@@ -248,7 +248,7 @@ INSERT INTO HasSubject VALUES ('TY.333.123','Non-fiction, Food, History');
 
 INSERT INTO BookCopy VALUES ('TY.333.123', 0, 'in');
 
-INSERT INTO Borrowing VALUES ('00000002','TY.333.123', 0, '2012-01-17', '2012-01-19');
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000002','TY.333.123', 0, '2012-01-17', '2012-01-19');
 
 INSERT INTO Book VALUES ('WB.313.234','84652156214','Duck Face Studied','Warner Bowen','Evan''s Publishig', 2011);
 
@@ -258,7 +258,7 @@ INSERT INTO HasSubject VALUES ('WB.313.234','Non-fiction, Culture, History');
 
 INSERT INTO BookCopy VALUES ('WB.313.234', 0, 'in');
 
-INSERT INTO Borrowing VALUES ('00000001','WB.313.234',0,'2012-01-17', '2012-01-21');
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000001','WB.313.234',0,'2012-01-17', '2012-01-21');
 
 INSERT INTO Book VALUES ('QY.323.389','8466575612314','The Rooster','Qare Young','Evan''s Publishig', 2011);
 
@@ -268,7 +268,7 @@ INSERT INTO HasSubject VALUES ('QY.323.389','Non-fiction, Food, History');
 
 INSERT INTO BookCopy VALUES ('QY.323.389', 0, 'out');
 
-INSERT INTO Borrowing VALUES ('00000002','QY.323.389',0,'2012-01-17', '0000-00-00');
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000002','QY.323.389',0,'2012-01-17', '0000-00-00');
 
 INSERT INTO Book VALUES ('QQ.393.444','8465654215154','Slayer of the West','Q. Qiu','Evan''s Publishig', 2011);
 
@@ -278,7 +278,7 @@ INSERT INTO HasSubject VALUES ('QQ.393.444','Non-fiction, History');
 
 INSERT INTO BookCopy VALUES ('QQ.393.444', 0, 'out');
 
-INSERT INTO Borrowing VALUES ('00000003','QQ.393.444',0,'2012-01-17', '0000-00-00');
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000003','QQ.393.444',0,'2012-01-17', '0000-00-00');
 
 INSERT INTO Book VALUES ('JK.222.364','8984566455694','Sun Striker','Johnson Kwan','Evan''s Publishig', 2011);
 
@@ -288,5 +288,5 @@ INSERT INTO HasSubject VALUES ('JK.222.364','Fiction, Adventure');
 
 INSERT INTO BookCopy VALUES ('JK.222.364', 0, 'in');
 
-INSERT INTO Borrowing VALUES ('00000004','JK.222.364',0,'2012-01-17', '2012-01-29);
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000004','JK.222.364',0,'2012-01-17', '2012-01-29);
 

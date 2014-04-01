@@ -36,7 +36,7 @@
 	</form>
 </table>
 {% for a_table in session.pop('holds', []) %}
-	<form action="/holdaction/{{ bid }}" method=post>
+	<form action="/holdsaction/{{ bid }}" method=post>
 		<dl>
     <table class = "table table-striper table-hover">
         <th>
@@ -52,14 +52,11 @@
         </tr>
         {% endfor %}
 		<dt>
-      <select name="cartOperation">
+      <select name="holdsOperation">
       {% if accType in ['clerk'] %}
         <option value="checkout" selected>Checkout</option>
-        <option value="holdrequest">Place Hold Request</option>
-      {% else %}
-        <option value="holdrequest" selected>Place Hold Request</option>
       {% endif %}
-      <option value="remove">Remove from Cart</option>
+      <option value="remove">Cancel HoldRequest(s)</option>
       </select>
 		<dd><input type=submit value="Submit">
     {% endfor %}

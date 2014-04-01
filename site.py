@@ -14,6 +14,7 @@ from src.borrow import borrow_page
 from src.cart import cart_page
 from src.catalogue import catalogue_page
 from src.fine import fine_page
+from src.holds import holds_page
 from src.reportcheckedout import report_checkedout_page
 from src.reportoverdue import report_overdue_page
 from src.reporttop import report_top_page
@@ -38,6 +39,7 @@ app.register_blueprint(borrow_page)
 app.register_blueprint(cart_page)
 app.register_blueprint(catalogue_page)
 app.register_blueprint(fine_page)
+app.register_blueprint(holds_page)
 app.register_blueprint(report_checkedout_page)
 app.register_blueprint(report_overdue_page)
 app.register_blueprint(report_top_page)
