@@ -17,9 +17,15 @@
             <th>Checked out By</th>
             <th>Check out Date</th>
             <th>Due Date</th>
+                    {% for ii in overdue %}
+                        {% if ii %}
+                            <tr bgcolor="FF8888" >
+                        {% else %}
+                            <tr>
+                        {% endif %}
+                    {% endfor %}
                     {% for row in a_table %}
-                        <tr>
-					    {% for item in row %}
+                        {% for item in row %}
 						    <td>{{ item }}</td>
 					    {% endfor %}
                         </tr>
