@@ -162,7 +162,7 @@ INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('000000
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 3, 'out');
 
-INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000002','WG.58.351',3,'2012-01-12', '0000-00-00');
+INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000002','WG.58.351',3,'2012-04-1', '0000-00-00');
 
 INSERT INTO BookCopy VALUES ('WG.58.351', 4, 'out');
 

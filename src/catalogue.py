@@ -24,7 +24,7 @@ def catalogue(searchtype=None,keyword=None):
         _keyword = _keyword.encode('utf-8')
     fieldnames = TableOperation.getFieldNames('Book')
     if _searchtype == 'title':
-        rows = TableOperation.sfw('Book', ['*'],"title LIKE '%%%s%%'" % _keyword)
+        rows = TableOperation.sfw("Book AS b INNER JOIN HasAuthor AS a ON (b.callNumber = a.callNumber) INNER JOIN HasSubject AS s ON (b.callNumber = s.callNumber)",["b.callNumber,b.isbn,b.title,b.mainAuthor,a.name,s.subject,b.publisher,b.year"],"b.title LIKE '%%%s%%'" % _keyword)
     elif _searchtype == 'author':
         rows = TableOperation.sfw("Book AS b INNER JOIN HasAuthor AS a ON (b.callNumber = a.callNumber) INNER JOIN HasSubject AS s ON (b.callNumber = s.callNumber)",["b.callNumber,b.isbn,b.title,b.mainAuthor,a.name,s.subject,b.publisher,b.year"],"a.name LIKE '%%%s%%' or b.mainAuthor LIKE '%%%s%%'" % (_keyword,_keyword))
     elif _searchtype == 'subject':
