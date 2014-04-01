@@ -133,7 +133,7 @@ def returnbook():
                 fines.append(fine)
                 TableOperation.insertTuple('Fine (amount, issuedDate, paidDate, borid)',
                         fine)
-            checkHolds = TableOperation.sfw('HoldRequest AS h INNER JOIN Borrowing AS bor ON (h.callNumber=bor.callNumber) ', ['h.hid'],'bor.borid=%s ORDER BY h.hid ASC' % _borid)
+            checkHolds = TableOperation.sfw('HoldRequest AS h INNER JOIN Borrowing AS bor ON (h.callNumber=bor.callNumber) ', ['h.hid','h.callNumber'],'bor.borid=%s ORDER BY h.hid ASC' % _borid)
             print checkHolds
             if checkHolds:
                 _hid = checkHolds[0][0]
@@ -141,7 +141,7 @@ def returnbook():
                 _bid = result[0][0]
                 _email = result[0][1]
                 _callNumber = checkHolds[0][1]
-                row = [_hid,_callNumber,1]
+                row = [int(_hid),_callNumber,1]
                 TableOperation.insertTuple('Cart',tuple(row))
                 TableOperation.deleteTuple('HoldRequest','hid=%s' %_hid)
                 settings = "status ='on-hold'"
