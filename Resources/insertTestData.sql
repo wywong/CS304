@@ -86,7 +86,7 @@ INSERT INTO BookCopy VALUES ('CD.45.098', 0, 'in');
 
 INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000009','CD.45.098',0,'2012-01-01', '2012-01-31');
 
-INSERT INTO Fine VALUES (100,'2012-01-31','0000-00-00',1);
+INSERT INTO Fine (amount, issuedDate, paidDate, borid) VALUES (100,'2012-01-31','0000-00-00',1);
 
 INSERT INTO HasSubject VALUES ('CD.45.098','Fiction, Horror, Suspense');
 
@@ -98,7 +98,7 @@ INSERT INTO BookCopy VALUES ('FG.235.331', 0, 'in');
 
 INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000004','FG.235.331',0,'2012-01-02', '2012-01-31');
 
-INSERT INTO Fine VALUES (101,'2012-01-31','2012-02-31',2);
+INSERT INTO Fine (amount, issuedDate, paidDate, borid) VALUES (101,'2012-01-31','2012-02-31',2);
 
 INSERT INTO BookCopy VALUES ('FG.235.331', 2, 'on hold');
 
@@ -124,7 +124,7 @@ INSERT INTO BookCopy VALUES ('EH.825.321', 2, 'in');
 
 INSERT INTO Borrowing (bid, callNumber, copyNo, outDate, inDate) VALUES ('00000002','EH.825.321',2,'2012-01-03', '2012-01-31');
 
-INSERT INTO Fine VALUES (103,'2012-01-31','2012-02-31',3);
+INSERT INTO Fine (amount, issuedDate, paidDate, borid) VALUES (103,'2012-01-31','2012-02-31',3);
 
 INSERT INTO BookCopy VALUES ('EH.825.321', 0, 'on hold');
 
