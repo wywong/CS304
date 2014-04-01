@@ -20,12 +20,10 @@ def addtoholds():
     print selected
     selectable = session['bquery']
     print selectable
-    today = date.today().isoformat()
-    today = str (today)
     rows = [selectable[int(s)] for s in selected]
     for r in rows:
             TableOperation.insertTuple('HoldRequest (bid, callNumber, issuedDate)',
-                                       (bid, r[0], today))
+                                       (bid, r[0], '0000-00-00'))
             TableOperation.deleteTuple('Cart', "bid='%s' AND callNumber='%s'" % (bid, r[0]))
 
     message = "Added to holds: %s" % (rows)

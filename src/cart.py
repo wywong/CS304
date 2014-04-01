@@ -128,6 +128,9 @@ def cartaction(bid):
         elif cartOp == 'remove':
             return redirect(url_for('.removefromcart', user=g.userInfo[0],
                 accType=g.userInfo[8], bid=bid))
+        elif cartOp == 'removehold':
+             return redirect(url_for('.removeholdfromcart', user=g.userInfo[0],
+                accType=g.userInfo[8], bid=bid))
     return render_template('base_page.result', user=g.userInfo[0], accType=g.userInfo[8])
 
 @cart_page.route('/checkoutcart/<bid>', methods=['GET'])
@@ -180,7 +183,24 @@ def removefromcart(bid):
     remove = [removable[int(s)] for s in selected]
     for r in remove:
         TableOperation.deleteTuple('Cart',
-                "bid = '%s' AND callNumber = '%s'" %(bid, r[0]))
+                "bid = '%s' AND callNumber = '%s' and isHold = 0" %(bid, r[0]))
+
+    message = "Books removed from cart:: %s" % (str(remove))
+    session['message'] = message
+
+    return redirect(url_for('.viewcart', user=g.userInfo[0], accType=g.userInfo[8]))
+    
+@cart_page.route('/removeholdfromcart/<bid>', methods=['POST','GET'])
+def removeholdfromcart(bid):
+    if not g.userInfo or bid == None:
+        return redirect(url_for('base_page.index', user=None))
+    selected = session['selected']
+    removable = session['readyquery']
+
+    remove = [removable[int(s)] for s in selected]
+    for r in remove:
+        TableOperation.deleteTuple('Cart',
+                "bid = '%s' AND callNumber = '%s' and isHold = 1" %(bid, r[0]))
 
     message = "Books removed from cart:: %s" % (str(remove))
     session['message'] = message
