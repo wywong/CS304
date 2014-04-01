@@ -3,23 +3,23 @@
 <center>
 <h2>Add Borrower</h2>
 {% if error %}<p class=error><strong>Error:</strong> {{ error }}{% endif %}
-<form action="{{ url_for('borrower_page.addborrower') }}" method=post
+<form action="{{ url_for('borrow_page.addborrower') }}" method=post
   onsubmit="return confirm('Are you sure you want to submit?')">
 	<dl>
 		<dt>password:
-		<dd><input type=text name=passwd>
+		<dd><input type=text name=passwd maxlength=16>
 		<dt>name:
-		<dd><input type=text name=name>
+		<dd><input type=text name=name maxlength=40>
 		<dt>address:
-		<dd><input type=text name=addr>
+		<dd><input type=text name=addr maxlength=40>
 		<dt>phone:
-		<dd><input type=text name=phone>
+		<dd><input type=text name=phone maxlength=10>
 		<dt>email:
-		<dd><input type=text name=email>
+		<dd><input type=text name=email maxlength=40>
 		<dt>SIN/Student Number:
-		<dd><input type=text name=sNum>
+		<dd><input type=text name=sNum maxlength=40>
 		<dt>Expiry Date:
-		<dd><input type=date name=expiryDate>
+		<dd><input type=date name=expiryDate maxlength=7>
 		<dt>Borrower Type:
       <select name="bType">
       <option value="student" selected>student</option>

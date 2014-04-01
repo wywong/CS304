@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS Borrower (
   phone char(10),
   emailAddress varchar(40) NOT NULL,
   sinOrStNo varchar(9) NOT NULL UNIQUE,
-  expiryDate varchar(10),
+  expiryDate DATE NOT NULL,
   type varchar(7),
   PRIMARY KEY (bid),
   FOREIGN KEY (type) REFERENCES BorrowerType(type)
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS Borrowing (
 );
 
 CREATE TABLE IF NOT EXISTS Fine (
-  fid varchar(40) NOT NULL,
+  fid int NOT NULL AUTO_INCREMENT,
   amount int NOT NULL,
   issuedDate DATE NOT NULL,
   paidDate DATE NOT NULL,

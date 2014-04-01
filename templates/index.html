@@ -14,16 +14,16 @@
 	<div class="container-fluid">
 
 		<div class="navbar-header">
-			<a class="navbar-brand" href="#">Library App</a>
+			<a class="navbar-brand" href="/">Library App</a>
 		</div>
 
 		<ul class="nav navbar-nav">
 
-			<form action="{{ url_for('catalogue') }}" class="navbar-form navbar-left" role="search">
+			<form action="{{ url_for('catalogue_page.catalogue') }}" class="navbar-form navbar-left" role="search">
 				<div class="form-group">
 
 					<dt>
-						<select name="searchtype">
+						<select name="searchtype" class="form-control">
 						<option value="title" selected>title</option>
 						<option value="author">author</option>
 						<option value="subject">subject</option>
@@ -70,6 +70,7 @@
 					<li><a href="/addbook">Add a Book to the Library</a></li>
 					<li><a href="#">Remove a Book from the Library</a></li>
 					<li class="divider" id = "popular_books"></li>
+                    <li><a href="/reportcheckedout">View All Checked out Books</a></li>
 					<li><a href="#">View Top Books</a></li>
 				</ul>
 			</li>
@@ -85,8 +86,8 @@
 				<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ user }} Account Info<b class="caret"></b></a>
 					<ul class="dropdown-menu">
 
-						<li><a href="/myborrowed">View Your Currently Checked Out Books</a></li>
-						<li><a href="#">View Current Fines</a></li>
+						<li><a href="/borrowed">View Your Currently Checked Out Books</a></li>
+						<li><a href="/viewfine">View Current Fines</a></li>
 						<li><a href="#">Personal Info</a></li>
 					</ul>
 				</li>

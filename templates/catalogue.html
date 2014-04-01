@@ -10,7 +10,9 @@
         <th>Call Number</th>
         <th>ISBN</th>
         <th>Title</th>
-        <th>Author</th>
+        <th>Main Author</th>
+        <th>Additional Authors</th>
+        <th>Subject</th>
         <th>Publisher</th>
         <th>Year</th>
         {% for row in a_table %}
@@ -19,7 +21,11 @@
 						<td><dd><input type="checkbox" name="{{loop.index-1}}"></td>
 					{% endif %}
 					{% for item in row %}
+					    {% if item==author %}
+					        {{ item }}
+					    {% else %}
 						<td>{{ item }}</td>
+						{% endif %}
 					{% endfor %}
         </tr>
         {% endfor %}

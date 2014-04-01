@@ -2,22 +2,44 @@
 
 from flask import Flask, request, session, url_for, redirect, \
      render_template, abort, g, flash
+from flask_mail import Mail
+from flask.ext.mail import Message
 
 from functools import wraps
 import MySQLdb
-from src import TableOperation, dbConn
+from src import TableOperation
 
 from src.base import base_page
+from src.borrow import borrow_page
 from src.cart import cart_page
-from src.borrower import borrower_page
+from src.catalogue import catalogue_page
+from src.fine import fine_page
+from src.reportcheckedout import report_checkedout_page
 
-db = dbConn.dbConn()
+
+
 
 app = Flask(__name__)
+
+mail = Mail(app)
+app.config.update(
+        DEBUG=True,
+        #EMAIL SETTINGS
+        MAIL_SERVER='smtp.gmail.com',
+        MAIL_PORT=465,
+        MAIL_USE_SSL=True,
+        MAIL_USERNAME = 'cs304p3@gmail.com',
+        MAIL_PASSWORD = '01189998819991197253'
+        )
+mail=Mail(app)
+
 app.secret_key = 'totally not safe'
 app.register_blueprint(base_page)
+app.register_blueprint(borrow_page)
 app.register_blueprint(cart_page)
-app.register_blueprint(borrower_page)
+app.register_blueprint(catalogue_page)
+app.register_blueprint(fine_page)
+app.register_blueprint(report_checkedout_page)
 
 @app.before_request
 def before_request():
@@ -44,25 +66,37 @@ def addbook():
         row = (callNum, isbn, title, mainAuthor, publisher, year)
 
         # Check if book already exists
-        if TableOperation.sfw(db, 'Book', ['callNumber'],
+        if TableOperation.sfw('Book', ['callNumber'],
                                     "callNumber = '%s'" %(callNum)):
             # Insert new copy
-            bookCopyFields = TableOperation.getFieldNames(db, 'BookCopy')
+            bookCopyFields = TableOperation.getFieldNames('BookCopy')
 
-            numCopies = int(TableOperation.sfw(db, 'BookCopy', ['callNumber', 'MAX(copyNo)'],
+            numCopies = int(TableOperation.sfw('BookCopy', ['callNumber', 'MAX(copyNo)'],
                                 "callNumber = '%s'" % (callNum))[0][1]) + 1
             bCopy = (callNum, numCopies, 'in')
-            TableOperation.insertTuple(db, 'BookCopy', bCopy)
+            TableOperation.insertTuple('BookCopy', bCopy)
 
             session['result'] = [[bookCopyFields, bCopy]]
         else:
             # Insert new Book and the first book copy
-            bookFields = TableOperation.getFieldNames(db, 'Book')
-            TableOperation.insertTuple(db, 'Book', tuple(row))
+            bookFields = TableOperation.getFieldNames('Book')
+            TableOperation.insertTuple('Book', tuple(row))
 
-            bookCopyFields = TableOperation.getFieldNames(db, 'BookCopy')
-            bCopy = (callNum, 1, 'in')
-            TableOperation.insertTuple(db, 'BookCopy', bCopy)
+            subject = request.form[ 'subject' ].encode('utf-8')
+            authors = request.form[ 'authors' ].encode('utf-8')
+
+            if subject:
+                    TableOperation.insertTuple('HasSubject', (callNum, subject))
+            else:
+                    TableOperation.insertTuple('HasSubject', (callNum, ""))
+            if authors:
+                    TableOperation.insertTuple('HasAuthor', (callNum, authors))
+            else:
+                    TableOperation.insertTuple('HasAuthor', (callNum, ""))
+
+            bookCopyFields = TableOperation.getFieldNames('BookCopy')
+            bCopy = (callNum, 0, 'in')
+            TableOperation.insertTuple('BookCopy', bCopy)
 
             session['result'] = [[bookFields, row], [bookCopyFields, bCopy]]
 
@@ -71,45 +105,32 @@ def addbook():
     return render_template('addbook.html', error=error,
                             user=g.userInfo[0], accType=g.userInfo[8])
 
-@app.route('/myborrowed')
-def myborrowed():
-    return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8]))
-
-@app.route('/catalogue')
-@app.route('/catalogue/<searchtype>/<keyword>')
-def catalogue(searchtype=None,keyword=None):
-    if searchtype and keyword:
-        _searchtype = searchtype
-        _keyword = keyword
+@app.route("/mailer")
+def mailer():
+    """ A simple mailer """
+    # [ string subject, [strings of recipients] ]
+    mailData = session.pop( 'email', None )
+    if mailData:
+        try:
+            msg = Message(mailData[0],
+                          sender="cs304p3@gmail.com",
+                          recipients=mailData[2])
+            mail.send(msg)
+            message = "Message sent"
+        except:
+            message = "Invalid message data"
     else:
-        _searchtype = request.args.get( 'searchtype' )
-        _keyword = request.args.get( 'keyword' )
-    if _searchtype==None or _keyword==None:
-        _searchtype = ""
-        _keyword = ""
-    else:
-        _searchtype = _searchtype.encode('utf-8')
-        _keyword = _keyword.encode('utf-8')
-
-    fieldnames = TableOperation.getFieldNames(db,'Book')
-    if _searchtype == 'title':
-        rows = TableOperation.sfw(db, 'Book', ['*'],"title LIKE '%%%s%%'" % _keyword)
-    elif _searchtype == 'author':
-        rows = TableOperation.sfw(db, 'Book', ['*'],"mainAuthor like '%%%s%%'" % _keyword)
-    elif _searchtype == 'subject':
-        rows = TableOperation.sfw(db, 'Book', ['*'],"subject like '%%%s%%'" % _keyword)
-    else:
-        rows = TableOperation.getColumns(db, 'Book', ['*'])
-    session['catalogue'] = [rows]
-    session['bquery'] = rows
-    return render_template('catalogue.html', user=g.userInfo[0], accType=g.userInfo[8])
+        message = "No mail data passed"
+    session['result'] = []
+    return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8],
+        message=message))
 
 @app.route('/show')
 def show():
     """ Displays the contents of table for debugging use """
     table = request.args.get('table')
-    fieldNames = TableOperation.getFieldNames(db, table)
-    rows = TableOperation.showTable(db, table)
+    fieldNames = TableOperation.getFieldNames(table)
+    rows = TableOperation.showTable(table)
     rows.insert(0, fieldNames)
     session['result'] = [rows]
     return render_template('result.html')

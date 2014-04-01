@@ -1,0 +1,33 @@
+{% extends "index.html" %}
+{% block content %}
+{% for a_table in session.pop('fine', []) %}
+{% if message %}<strong>Message:</strong> {{ message }}{% endif %}
+	<form action="/fineaction/{{ bid }}" method=post>
+		<dl>
+    <table class = "table table-striper table-hover">
+        <th></th>
+        {% for h in fname %}
+          <th>{{ h }}</th>
+        {% endfor %}
+    {% for row in a_table %}
+    <tr>
+          <td><dd><input type="checkbox" name="{{loop.index-1}}"></td>
+					{% for item in row %}
+						<td>{{ item }}</td>
+					{% endfor %}
+        </tr>
+        {% endfor %}
+		<dt>
+      <select name="fineOperation">
+      {% if accType in ['clerk'] %}
+        <option value="fine" selected>Pay Fine</option>
+      {% else %}
+        <option value="fine" selected>Pay Fine</option>
+      {% endif %}
+      </select>
+		<dd><input type=submit value="Submit">
+    {% endfor %}
+		</dl>
+	</form>
+</table>
+{% endblock %}
