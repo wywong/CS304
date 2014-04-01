@@ -121,7 +121,8 @@ def returnbook():
         mails = []
         for r in intersection:
             settings = "inDate = '%s'" % (date.today().isoformat())
-            conds = "borid = '%s'" % (r[0])
+            _borid = r[0]
+            conds = "borid = '%s'" % _borid
             TableOperation.usw('Borrowing', settings, conds)
             ymd = r[4].split('-')
             ymd = [int(x) for x in ymd]
@@ -132,9 +133,7 @@ def returnbook():
                 fines.append(fine)
                 TableOperation.insertTuple('Fine (amount, issuedDate, paidDate, borid)',
                         fine)
-# SELECT * FROM HoldRequest WHERE hid in (SELECT MIN(hid) FROM HoldRequest WHERE issuedDate='0000-00-00')
-            checkHolds = TableOperation.getColumns('HoldRequest', ['*'],
-                    """hid in (SELECT MIN(hid) FROM HoldRequest')""")
+            checkHolds = TableOperation.sfw('HoldRequest AS h INNER JOIN Borrowing AS bor ON (h.callNumber=bor.callNumber) ORDER BY h.hid ASC', ['h.hid'],'bor.borid=%s' % _borid)
             print checkHolds
             if checkHolds:
                 _hid = checkHolds[0][0]
