@@ -72,7 +72,7 @@
                             {% for item in row %}
 						        <td>{{ item }}</td>
 					        {% endfor %}
-                            <td><button><a href='mailto:wilsonwong578@gmail.com?Subject=Your%20Book%20is%20Overdue'>Email Overdue Notice</a></button></td></tr>
+                            <td><button><a href='mailto:{{emails.pop(0)}}?Subject=Your%20Book%20{{book.pop(0)}}%20is%20Overdue'>Email Overdue Notice</a></button></td></tr>
                         {% endfor %}
              </table>
         
