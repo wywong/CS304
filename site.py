@@ -137,7 +137,7 @@ def checkouthold():
     _copynum = bookresult[0][2]
     _bid = bookresult[0][3]
     
-    TableOperation.insertTuple('Borrowing (bid,callNumber,copyNum,outDate,inDate)', (_bid,_callnum,_copynum,date.today().isoformat(),'0000-00-00')
+    TableOperation.insertTuple('Borrowing (bid,callNumber,copyNum,outDate,inDate)', (_bid,_callnum,_copynum,date.today().isoformat(),'0000-00-00'))
     TableOperation.deleteTuple('HoldRequest',"hid='%s'" % _hid)
     return render_tempate('checkouthold.html')
 
