@@ -107,13 +107,12 @@ def addbook():
 
     return render_template('addbook.html', error=error,
                             user=g.userInfo[0], accType=g.userInfo[8])
-@app.route("/checkouthold", methods=['POST', 'GET'])
+@app.route("/checkoutholds", methods=['POST', 'GET'])
 def checkouthold():
     if request.method == 'POST':
         _hid = request.form[ 'hid' ].encode('utf-8')
         _bid = request.form[ 'bid' ].encode('utf-8')
-        bookresult = TableOperation.sfw("Borrower as b INNER JOIN HoldRequest as h ON (h.bid = b.bid) INNER JOIN BookCopy AS bc ON (h.callNumber = bc.callNumber)",
-                ['b.callNumber','bc.copyNum'],"bc.status='on-hold'")
+        bookresult = TableOperation.sfw("Borrower as b INNER JOIN HoldRequest as h ON (h.bid = b.bid) INNER JOIN BookCopy AS bc ON (h.callNumber = bc.callNumber)",['h.callNumber','bc.copyNo'],"bc.status='on-hold'")
         _callnum = bookresult[0][0]
         _copynum = bookresult[0][1]
         row = (_bid,_callnum,_copynum,date.today().isoformat(),'0000-00-00')
@@ -122,7 +121,8 @@ def checkouthold():
         fields = TableOperation.getFieldNames('Borrower')
         session['result'] = [[fields, row]]
         return redirect(url_for('base_page.result', user=g.userInfo[0], accType=g.userInfo[8]))
-    return render_tempate('checkoutholds.html')
+    return render_template('checkoutholds.html')
+
 @app.route("/mailer")
 def mailer():
     """ A simple mailer """
