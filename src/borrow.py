@@ -122,8 +122,6 @@ def returnbook():
             settings = "inDate = '%s'" % (date.today().isoformat())
             conds = "borid = '%s'" % (r[0])
             TableOperation.usw('Borrowing', settings, conds)
-            settings = "status ='in'"
-            conds = "callNumber = '%s' AND copyNo = '%s'" % tuple(copyUpdate.pop())
             ymd = r[4].split('-')
             ymd = [int(x) for x in ymd]
             dueDate = datetime.date(ymd[0], ymd[1], ymd[2]) + datetime.timedelta(timeLimit)
@@ -133,10 +131,19 @@ def returnbook():
                 fines.append(fine)
                 TableOperation.insertTuple('Fine (amount, issuedDate, paidDate, borid)',
                         fine)
+            checkHolds = TableOperation.sfw('HoldRequest', ['*'],
+                    "bid='%s' AND issuedDate='0000-00-00'" % (bid))
+            if checkHolds:
+                TableOperation.usw('HoldRequest', "issuedDate='%s'" %(date.today().isoformat()),
+                    "hid='%s'" % (checkHolds[0][0]))
+                settings = "status ='on-hold'"
+            else:
+                settings = "status ='in'"
+            conds = "callNumber = '%s' AND copyNo = '%s'" % tuple(copyUpdate.pop())
             TableOperation.usw('BookCopy', settings, conds)
         message=""
         if copyRows:
-            message = message + "Returned copies: %s </br>" % (str(copies))
+            message = message + "Returned copies: %s" % (str(copies))
         if fines:
             message = message + "Fines Assessed: %s" % (str(fines))
         session['message'] = message

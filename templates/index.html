@@ -42,8 +42,7 @@
 			<a href="#" class="dropdown-toggle" data-toggle="dropdown">Manage Checked Out Books<b class="caret"></b></a>
 				<ul class = "dropdown-menu">
 					{% if accType == 'clerk' %}
-					<li><a href='/bidcheck'>Checkout</a></li>
-					<li><a href="#">Process Book Return</a></li>
+					<li><a href='/bidcheck'>Checkout/Process Book</a></li>
 					<li><a href="#">View Overdue Items</a></li>
 					{% endif %}
 					{% if accType == 'borrower' %}
