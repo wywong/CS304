@@ -118,6 +118,7 @@ def returnbook():
                                     ON Borrower.type=BorrowerType.type""",
                                     ['bookTimeLimit'], "bid = '%s'" % (bid))[0][0] * 7
         fines = []
+        mails = []
         for r in intersection:
             settings = "inDate = '%s'" % (date.today().isoformat())
             conds = "borid = '%s'" % (r[0])
@@ -131,16 +132,20 @@ def returnbook():
                 fines.append(fine)
                 TableOperation.insertTuple('Fine (amount, issuedDate, paidDate, borid)',
                         fine)
+# SELECT * FROM HoldRequest WHERE hid in (SELECT MIN(hid) FROM HoldRequest WHERE issuedDate='0000-00-00')
             checkHolds = TableOperation.sfw('HoldRequest', ['*'],
-                    "bid='%s' AND issuedDate='0000-00-00'" % (bid))
+                    """hid in (SELECT MIN(hid) FROM HoldRequest WHERE issuedDate='0000-00-00')""")
+            print checkHolds
             if checkHolds:
                 TableOperation.usw('HoldRequest', "issuedDate='%s'" %(date.today().isoformat()),
                     "hid='%s'" % (checkHolds[0][0]))
                 settings = "status ='on-hold'"
+                mails.append('wilsonwong578@gmail.com')
             else:
                 settings = "status ='in'"
             conds = "callNumber = '%s' AND copyNo = '%s'" % tuple(copyUpdate.pop())
             TableOperation.usw('BookCopy', settings, conds)
+        print mails
         message=""
         if copyRows:
             message = message + "Returned copies: %s" % (str(copies))
