@@ -137,7 +137,7 @@ def returnbook():
             print checkHolds
             if checkHolds:
                 _hid = checkHolds[0][0]
-                result = TableOperation.sfw("Borrower AS b INNER JOIN HoldRequest as h ON (h.bid=b.bid)",['b.bid','b.emailAddress'],'h.hid=%s' % _hid)
+                result = TableOperation.sfw("Borrower AS b INNER JOIN HoldRequest as h ON (h.bid=b.bid)",['b.bid','b.emailAddress'],'h.hid=%08d' % _hid)
                 _bid = result[0][0]
                 _email = result[0][1]
                 _callNumber = checkHolds[0][1]
